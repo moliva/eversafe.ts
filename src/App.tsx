@@ -20,6 +20,20 @@ function formatContent(content: object): HTMLElement {
   return contentElement
 }
 
+function parseContent(value: string): object {
+  const content = {}
+
+  const lines = value.split("\n")
+  for (const line of lines) {
+    if (line.startsWith('  ')) {
+
+    }
+  }
+
+  return content
+}
+
+
 type Note = {
   id: number;
   name: string;
@@ -38,7 +52,9 @@ const NoteComponent = (props: { note: Note }) => {
 export const App: Component = () => {
 
   const [notes, setNotes] = createSignal<Note[] | undefined>(undefined);
-  const [showCreateNote, setShowCreateNote] = createSignal(false);
+  const [showCreateNote, setShowCreateNote] = createSignal(true);
+
+  let newNoteName, newNoteContent
 
   onMount(async () => {
     // const res = await fetch(`https://jsonplaceholder.typicode.com/photos?_limit=20`);
@@ -56,6 +72,15 @@ export const App: Component = () => {
   });
 
   const showModal = () => { setShowCreateNote(true); };
+  const createNote = () => {
+    console.log(newNoteName!.value)
+    console.log(newNoteContent!.value)
+    const newNote = {
+      name: newNoteName!.value,
+      content: parseContent(newNoteContent!.value)
+    }
+    setShowCreateNote(false)
+  }
 
   return (
     <div class={styles.App}>
@@ -65,10 +90,10 @@ export const App: Component = () => {
         <Show when={showCreateNote()}>
           <div class={styles.modal}>
             <div class={styles["modal-content"]}>
-              <input placeholder="Note name"></input>
-              <textarea placeholder="Stuff..." rows="10"></textarea>
+              <input ref={newNoteName} id="new-note-name" placeholder="Note name"></input>
+              <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10"></textarea>
               <div class={styles.controls}>
-                <button onClick={() => setShowCreateNote(false)}>Create</button>
+                <button class={styles.primary} onClick={createNote}>Create</button>
                 <button onClick={() => setShowCreateNote(false)}>Discard</button>
               </div>
             </div>

@@ -22,15 +22,6 @@
   color: #b318f0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .main {
   background-color: #282c34;
   min-height: 100vh;
@@ -38,7 +29,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* font-size: calc(10px + 2vmin); */
   color: white;
 }
 
@@ -79,9 +69,35 @@
 }
 
 .controls {
-  /* margin-top: 10px; */
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   gap: 5px;
+}
+
+input {
+  background-color: #282c34;
+  border: 0;
+
+  color: white;
+}
+
+textarea {
+  background-color: #282c34;
+  border: 0;
+
+  color: white;
+}
+
+button {
+  border: 0;
+  border-radius: 5px;
+  padding: 7px 10px;
+
+  color: white;
+  background-color: gray;
+}
+
+.primary {
+  background-color: #00ac00;
 }
