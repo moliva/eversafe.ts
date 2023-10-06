@@ -31,8 +31,7 @@ const NoteComponent = (props: { note: Note }) => {
 
   return <div class={styles.note}>
     <strong>{note.name}</strong>
-    <div>{formatContent(note.content)}</div>
-
+    {formatContent(note.content)}
   </div>
 }
 
@@ -64,8 +63,15 @@ export const App: Component = () => {
       </header>
       <main class={styles.main}>
         <Show when={showCreateNote()}>
-          <div>
-            Create note!
+          <div class={styles.modal}>
+            <div class={styles["modal-content"]}>
+              <input placeholder="Note name"></input>
+              <textarea placeholder="Stuff..." rows="10"></textarea>
+              <div class={styles.controls}>
+                <button onClick={() => setShowCreateNote(false)}>Create</button>
+                <button onClick={() => setShowCreateNote(false)}>Discard</button>
+              </div>
+            </div>
           </div>
         </Show>
         <section class={styles.notes}>
