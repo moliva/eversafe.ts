@@ -1,43 +1,72 @@
 import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
+
 import styles from './App.module.css';
 
-function formatContent(content: object): HTMLElement {
+const API_HOST = "http://localhost:9000";
+
+async function fetchNotes() {
+  return await fetch(`${API_HOST}/notes`)
+}
+
+async function postNote(note: Note) {
+  return await fetch(`${API_HOST}/notes`, { method: 'POST', body: JSON.stringify(note), headers: { "Content-Type": "application/json" } })
+}
+
+function formatContent(content: Content): HTMLElement {
   const contentElement = document.createElement("div")
-  for (const [key, value] of Object.entries(content)) {
-    const keyElement = document.createElement("p")
-    keyElement.innerText = key
+  for (const [key, value] of content) {
+    const keyElement = document.createElement("div")
+    keyElement.style.display = 'flex'
+    keyElement.style.alignItems = 'center'
+    keyElement.style.height = '30px'
+    keyElement.style.cursor = 'pointer'
+
+    const keyLabel = document.createElement("p")
+    keyLabel.innerText = key
+    // keyLabel.className = ` ${styles.blur}`
+    keyElement.appendChild(keyLabel)
+
+    const clipLabel = document.createElement("a")
+    clipLabel.style.paddingLeft = '3px'
+    clipLabel.onclick = (ev) => { navigator.clipboard.writeText(key) }
+    clipLabel.innerHTML = '&#x1f4cb'
+
+    keyElement.appendChild(clipLabel)
+
     contentElement.appendChild(keyElement)
 
-    if (value === null) {
-      // do nothing
-    } else if (typeof value === 'object') {
-      const valueElement = formatContent(value)
-      contentElement.appendChild(valueElement)
-      valueElement.style.paddingLeft = '10px';
-    }
+    const valueElement = formatContent(value)
+    contentElement.appendChild(valueElement)
+    valueElement.style.paddingLeft = '10px';
   }
 
   return contentElement
 }
 
-function parseContent(value: string): object {
-  const content = {}
+function parseContent(value: string): Content {
+  const content: Content = []
 
   const lines = value.split("\n")
-  for (const line of lines) {
-    if (line.startsWith('  ')) {
-
+  for (let line of lines) {
+    let at = content
+    while (line.startsWith('  ')) {
+      at = at[at.length - 1]![1]
+      line = line.substring(2)
     }
+
+    if (line.length)
+      at.push([line, []])
   }
 
   return content
 }
 
+type Content = [string, Content][]
 
 type Note = {
   id: number;
   name: string;
-  content: object;
+  content: Content;
 }
 
 const NoteComponent = (props: { note: Note }) => {
@@ -52,33 +81,40 @@ const NoteComponent = (props: { note: Note }) => {
 export const App: Component = () => {
 
   const [notes, setNotes] = createSignal<Note[] | undefined>(undefined);
-  const [showCreateNote, setShowCreateNote] = createSignal(true);
+  const [showCreateNote, setShowCreateNote] = createSignal(false);
 
   let newNoteName, newNoteContent
 
-  onMount(async () => {
-    // const res = await fetch(`https://jsonplaceholder.typicode.com/photos?_limit=20`);
-    // setPhotos(await res.json());
-    const notes = [
-      { id: 1, name: 'Groceries', content: { 'banana': null, 'manzana': null } },
-      {
-        id: 2, name: 'Apple pie', content: {
-          'ingredients': { 'apple': null, 'flour': null, 'butter': null, 'sugar': null },
-          'steps': { '1- make dough': null, '2- prepare filling': null, '3- ???': null, '4- profit!': { 'yes': null, 'i love it': null } }
-        }
-      },
-    ];
+  const refreshNotes = async () => {
+
+    const res = await fetchNotes()
+    const notes = await res.json()
+
     setNotes(notes);
+  }
+
+  onMount(async () => {
+    await refreshNotes()
   });
 
   const showModal = () => { setShowCreateNote(true); };
   const createNote = () => {
-    console.log(newNoteName!.value)
-    console.log(newNoteContent!.value)
     const newNote = {
       name: newNoteName!.value,
       content: parseContent(newNoteContent!.value)
-    }
+    } as Note
+
+    postNote(newNote)
+      .then((response) => {
+        // update state
+        if (response.ok) {
+          refreshNotes()
+        }
+      })
+      .catch((e) => {
+        // show error
+      })
+
     setShowCreateNote(false)
   }
 
