@@ -1,4 +1,4 @@
-import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
+import { createSignal, type Component, For, onMount, Switch, Match, Show, createEffect } from 'solid-js';
 
 import styles from './App.module.css';
 
@@ -218,6 +218,12 @@ export const App: Component = () => {
     setShowCreateNote(false)
   }
 
+  const [filter, setFilter] = createSignal("")
+
+  const onFilterChange = (value: string) => {
+    setFilter(value)
+  }
+
   return (
     <div class={styles.App}>
       <header class={styles.header}>
@@ -236,11 +242,14 @@ export const App: Component = () => {
           </div>
         </Show>
         <section class={styles.notes}>
-          <h2>Notes</h2>
+          <div style={{ display: 'flex', "align-items": 'center', "margin-bottom": '10px' }}>
+            <input class={styles['filter-input']} value={filter()} placeholder="Filter..." onChange={(ev) => onFilterChange(ev.target.value)}></input>
+            <button onClick={() => setFilter("")} class={styles.button} style={{ "background-color": 'transparent' }}>❌</button>
+          </div>
           <div id="notes">
             <Switch fallback={<p>Loading...</p>}>
               <Match when={typeof notes() === 'object'}>
-                <For each={notes()}>{(note) => <NoteComponent note={note}></NoteComponent>}</For>
+                <For each={notes()!.filter((note) => note.name.toLowerCase().includes(filter().toLowerCase()))}>{(note) => <NoteComponent note={note}></NoteComponent>}</For>
               </Match>
             </Switch>
           </div>
