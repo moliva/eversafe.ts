@@ -12,6 +12,31 @@ async function postNote(note: Note) {
   return await fetch(`${API_HOST}/notes`, { method: 'POST', body: JSON.stringify(note), headers: { "Content-Type": "application/json" } })
 }
 
+function copyToClipboard(value: string): void {
+  navigator.clipboard.writeText(value)
+}
+
+function contentToString(content: Content, indent: string = '', acc: string[] = []): string[] {
+  for (const [key, value] of content) {
+    let line = indent
+
+    if (key.checkbox) {
+      line += key.check ? '[x]' : '[ ]'
+    }
+
+    if (key.blur) {
+      line += '[!]'
+    }
+
+    line += key.line
+
+    acc.push(line)
+
+    contentToString(value, indent + '  ', acc)
+  }
+  return acc
+}
+
 function formatContent(content: Content): HTMLElement {
   const contentElement = document.createElement("div")
   for (const [key, value] of content) {
@@ -21,14 +46,42 @@ function formatContent(content: Content): HTMLElement {
     keyElement.style.height = '30px'
     keyElement.style.cursor = 'pointer'
 
+    if (key.checkbox) {
+      const check = document.createElement("input")
+      check.type = 'checkbox'
+      check.checked = !!key.check
+
+      check.onclick = () => {
+        // TODO - update the note content! - moliva - 2023/10/09
+      }
+
+      keyElement.appendChild(check)
+    }
+
     const keyLabel = document.createElement("p")
-    keyLabel.innerText = key
-    // keyLabel.className = ` ${styles.blur}`
+    keyLabel.innerText = key.line!
     keyElement.appendChild(keyLabel)
+
+    // add controls for blur
+    if (key.blur) {
+      keyLabel.className = ` ${styles.blur}`
+
+      const showButton = document.createElement("a")
+      showButton.innerHTML = '&#128065'
+      showButton.style.paddingLeft = '3px'
+      showButton.onclick = (ev) => {
+        if (keyLabel.className.includes(styles.blur)) {
+          keyLabel.className = keyLabel.className.replaceAll(styles.blur, '')
+        } else {
+          keyLabel.className = ` ${styles.blur}`
+        }
+      }
+      keyElement.appendChild(showButton)
+    }
 
     const clipLabel = document.createElement("a")
     clipLabel.style.paddingLeft = '3px'
-    clipLabel.onclick = (ev) => { navigator.clipboard.writeText(key) }
+    clipLabel.onclick = (ev) => { copyToClipboard(key.line!) }
     clipLabel.innerHTML = '&#x1f4cb'
 
     keyElement.appendChild(clipLabel)
@@ -48,20 +101,50 @@ function parseContent(value: string): Content {
 
   const lines = value.split("\n")
   for (let line of lines) {
+    // check parent node of current line
     let at = content
     while (line.startsWith('  ')) {
       at = at[at.length - 1]![1]
       line = line.substring(2)
     }
 
+    const value: LineFormat = {}
+
+    // check format
+    // 1- checkbox
+    if (line.startsWith('[ ]')) {
+      value.checkbox = true
+      value.check = false
+      line = line.substring(3)
+    } else if (line.startsWith('[x]')) {
+      value.checkbox = true
+      value.check = true
+      line = line.substring(3)
+    }
+
+    // 2- blur
+    if (line.startsWith('[!]')) {
+      value.blur = true
+      line = line.substring(3)
+    }
+
+    value.line = line
+
     if (line.length)
-      at.push([line, []])
+      at.push([value, []])
   }
 
   return content
 }
 
-type Content = [string, Content][]
+type LineFormat = {
+  line?: string;
+  checkbox?: boolean;
+  check?: boolean;
+  blur?: boolean;
+}
+
+type Content = [LineFormat, Content][]
 
 type Note = {
   id: number;
@@ -73,7 +156,12 @@ const NoteComponent = (props: { note: Note }) => {
   const { note } = props;
 
   return <div class={styles.note}>
-    <strong>{note.name}</strong>
+    <div class={styles['note-header']}>
+      <strong>{note.name}</strong>
+      <a class={styles.button} onClick={() => { }}>✏️</a>
+      <a class={styles.button} onClick={() => {/*deleteNote(note)*/ }}>❌</a>
+      <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content).join('\n'))}>📋</a>
+    </div>
     {formatContent(note.content)}
   </div>
 }
@@ -150,4 +238,3 @@ export const App: Component = () => {
     </div>
   );
 };
-
