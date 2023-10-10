@@ -12,10 +12,6 @@
   color: white;
 }
 
-.link {
-  color: #b318f0;
-}
-
 .main {
   background-color: #282c34;
   min-height: 100vh;
@@ -26,6 +22,26 @@
   color: white;
 }
 
+/* ***************************************************************************************************** */
+/* *************** Arrow *************** */
+/* ***************************************************************************************************** */
+
+.arrow {
+  border: solid lightgray;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
 
 /* ***************************************************************************************************** */
 /* *************** Note Component *************** */
@@ -61,7 +77,9 @@
   gap: 5px;
 }
 
-
+/* ***************************************************************************************************** */
+/* *************** Modal *************** */
+/* ***************************************************************************************************** */
 
 .modal {
   position: fixed; /* Stay in place */
@@ -88,12 +106,37 @@
   width: 80%; /* Could be more or less, depending on screen size */
 }
 
-.controls {
+.modal-controls {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   gap: 5px;
 }
+
+/* ***************************************************************************************************** */
+/* *************** Text decorations *************** */
+/* ***************************************************************************************************** */
+
+.link {
+  color: #b318f0;
+}
+
+.blur {
+  color: transparent;
+  text-shadow: 0 0 8px #000;
+}
+
+.primary {
+  background-color: #00ac00;
+}
+
+.button {
+  cursor: pointer;
+}
+
+/* ***************************************************************************************************** */
+/* *************** Elementwise *************** */
+/* ***************************************************************************************************** */
 
 input {
   background-color: #282c34;
@@ -118,38 +161,3 @@ button {
   background-color: gray;
 }
 
-.primary {
-  background-color: #00ac00;
-}
-
-.blur {
-  color: transparent;
-  text-shadow: 0 0 8px #000;
-}
-
-.button {
-  cursor: pointer;
-}
-
-
-
-/* ***************************************************************************************************** */
-/* *************** Arrow *************** */
-/* ***************************************************************************************************** */
-
-.arrow {
-  border: solid lightgray;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-}
-
-.right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-
-.down {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-}

@@ -228,7 +228,7 @@ export const App: Component = () => {
             <div class={styles["modal-content"]}>
               <input ref={newNoteName} id="new-note-name" placeholder="Note name"></input>
               <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10"></textarea>
-              <div class={styles.controls}>
+              <div class={styles['modal-controls']}>
                 <button class={styles.primary} onClick={createNote}>Create</button>
                 <button onClick={() => setShowCreateNote(false)}>Discard</button>
               </div>
