@@ -39,6 +39,8 @@ function contentToString(content: Content, indent: string = '', acc: string[] = 
 
 function formatContent(content: Content): HTMLElement {
   const contentElement = document.createElement("div")
+  contentElement.style.paddingLeft = '15px'
+
   for (const [key, value] of content) {
     const keyElement = document.createElement("div")
     keyElement.style.display = 'flex'
@@ -154,16 +156,26 @@ type Note = {
 
 const NoteComponent = (props: { note: Note }) => {
   const { note } = props;
+  const [collapsed, setCollapsed] = createSignal(false)
+
+  const toggleNote = () => {
+    setCollapsed(!collapsed())
+  }
 
   return <div class={styles.note}>
     <div class={styles['note-header']}>
-      <strong>{note.name}</strong>
-      <a class={styles.button} onClick={() => { }}>✏️</a>
-      <a class={styles.button} onClick={() => {/*deleteNote(note)*/ }}>❌</a>
-      <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content).join('\n'))}>📋</a>
+      <div class={styles['note-label']}>
+        <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} onClick={toggleNote} />
+        <strong class={styles['note-name']}>{note.name}</strong>
+      </div>
+      <div class={styles['note-controls']}>
+        <a class={styles.button} onClick={() => { }}>✏️</a>
+        <a class={styles.button} onClick={() => {/*deleteNote(note)*/ }}>❌</a>
+        <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content).join('\n'))}>📋</a>
+      </div>
     </div>
-    {formatContent(note.content)}
-  </div>
+    {collapsed() ? null : formatContent(note.content)}
+  </div >
 }
 
 export const App: Component = () => {
@@ -176,7 +188,7 @@ export const App: Component = () => {
   const refreshNotes = async () => {
 
     const res = await fetchNotes()
-    const notes = await res.json()
+    const notes = await res.json() as Note[]
 
     setNotes(notes);
   }

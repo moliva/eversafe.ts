@@ -26,6 +26,11 @@
   color: white;
 }
 
+
+/* ***************************************************************************************************** */
+/* *************** Note Component *************** */
+/* ***************************************************************************************************** */
+
 .note {
   /* border: 1px solid white; */
   border-radius: 10px;
@@ -37,11 +42,26 @@
   background-color: #404040;
 }
 
+.note-label {
+  display: block;
+}
+
 .note-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.note-name {
+  margin-left: 5px;
+}
+
+.note-controls {
+  display: flex;
   gap: 5px;
 }
+
+
 
 .modal {
   position: fixed; /* Stay in place */
@@ -109,4 +129,27 @@ button {
 
 .button {
   cursor: pointer;
+}
+
+
+
+/* ***************************************************************************************************** */
+/* *************** Arrow *************** */
+/* ***************************************************************************************************** */
+
+.arrow {
+  border: solid lightgray;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
 }
