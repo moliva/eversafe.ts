@@ -1,29 +1,13 @@
 import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
 
+import { Note } from './types';
+
 import { NoteComponent } from './components/NoteComponent';
 import { EditNote } from './components/EditNoteComponent';
 
-import { Note } from './types';
+import { deleteNote, fetchNotes, postNote, putNote } from './services';
 
 import styles from './App.module.css';
-
-const API_HOST = "http://localhost:9000";
-
-async function fetchNotes() {
-  return await fetch(`${API_HOST}/notes`)
-}
-
-async function putNote(note: Note) {
-  return await fetch(`${API_HOST}/notes/${note.id}`, { method: 'PUT', body: JSON.stringify(note), headers: { "Content-Type": "application/json" } })
-}
-
-async function postNote(note: Note) {
-  return await fetch(`${API_HOST}/notes`, { method: 'POST', body: JSON.stringify(note), headers: { "Content-Type": "application/json" } })
-}
-
-async function deleteNote(note: Note) {
-  return await fetch(`${API_HOST}/notes/${note.id}`, { method: 'DELETE' })
-}
 
 export const App: Component = () => {
 
@@ -31,12 +15,8 @@ export const App: Component = () => {
   const [showCreateNote, setShowCreateNote] = createSignal(false);
   const [currentNote, setCurrentNote] = createSignal<Note | undefined>(undefined);
 
-
-
   const refreshNotes = async () => {
-
-    const res = await fetchNotes()
-    const notes = await res.json() as Note[]
+    const notes = await fetchNotes()
 
     setNotes(notes);
   }
@@ -61,14 +41,9 @@ export const App: Component = () => {
     const promise = note.id ? putNote(note) : postNote(note)
 
     promise
-      .then((response) => {
-        // update state
-        if (response.ok) {
-          refreshNotes()
-        }
-      })
+      .then(refreshNotes)
       .catch(() => {
-        // show error
+        // TODO - show error - moliva - 2023/10/11
       })
 
     setShowCreateNote(false)
@@ -76,14 +51,9 @@ export const App: Component = () => {
 
   const onDeleteNote = (note: Note): void => {
     deleteNote(note)
-      .then((response) => {
-        // update state
-        if (response.ok) {
-          refreshNotes()
-        }
-      })
+      .then(refreshNotes)
       .catch(() => {
-        // show error
+        // TODO - show error - moliva - 2023/10/11
       })
   }
 
