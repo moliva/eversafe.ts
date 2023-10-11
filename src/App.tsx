@@ -32,6 +32,7 @@ export const App: Component = () => {
   const [currentNote, setCurrentNote] = createSignal<Note | undefined>(undefined);
 
 
+
   const refreshNotes = async () => {
 
     const res = await fetchNotes()
@@ -42,6 +43,13 @@ export const App: Component = () => {
 
   onMount(async () => {
     await refreshNotes()
+
+    window.addEventListener('keyup', function(e) {
+      if (e.key == 'Escape' || e.key == 'Esc') {
+        setShowCreateNote(false)
+        return false;
+      }
+    }, true);
   })
 
   const showModal = (note: Note | undefined) => {
