@@ -3,6 +3,7 @@ import { createSignal } from 'solid-js';
 import { Content, Note } from '../types';
 
 import styles from '../App.module.css';
+import { contentToString, copyToClipboard } from '../utils';
 
 export type NoteProps = {
   onDelete(note: Note): void;
@@ -35,32 +36,7 @@ export const NoteComponent = (props: NoteProps) => {
   </div>;
 };
 
-export function copyToClipboard(value: string): void {
-  navigator.clipboard.writeText(value)
-}
-
-export function contentToString(content: Content, indent: string = '', acc: string[] = []): string[] {
-  for (const [key, value] of content) {
-    let line = indent
-
-    if (key.checkbox) {
-      line += key.check ? '[x]' : '[ ]'
-    }
-
-    if (key.blur) {
-      line += '[!]'
-    }
-
-    line += key.line
-
-    acc.push(line)
-
-    contentToString(value, indent + '  ', acc)
-  }
-  return acc
-}
-
-export function formatContent(content: Content): HTMLElement {
+function formatContent(content: Content): HTMLElement {
   const contentElement = document.createElement("div")
   contentElement.style.paddingLeft = '15px'
 
@@ -94,7 +70,7 @@ export function formatContent(content: Content): HTMLElement {
       const showButton = document.createElement("a")
       showButton.innerHTML = '&#128065'
       showButton.style.paddingLeft = '3px'
-      showButton.onclick = (ev) => {
+      showButton.onclick = () => {
         if (keyLabel.className.includes(styles.blur)) {
           keyLabel.className = keyLabel.className.replaceAll(styles.blur, '')
         } else {
@@ -106,7 +82,7 @@ export function formatContent(content: Content): HTMLElement {
 
     const clipLabel = document.createElement("a")
     clipLabel.style.paddingLeft = '3px'
-    clipLabel.onclick = (ev) => { copyToClipboard(key.line!) }
+    clipLabel.onclick = () => { copyToClipboard(key.line!) }
     clipLabel.innerHTML = '&#x1f4cb'
 
     keyElement.appendChild(clipLabel)

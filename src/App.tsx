@@ -1,7 +1,9 @@
 import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
 
-import { NoteComponent, contentToString } from './components/NoteComponent';
-import { Content, LineFormat, Note } from './types';
+import { NoteComponent } from './components/NoteComponent';
+import { EditNote } from './components/EditNoteComponent';
+
+import { Note } from './types';
 
 import styles from './App.module.css';
 
@@ -21,76 +23,6 @@ async function postNote(note: Note) {
 
 async function deleteNote(note: Note) {
   return await fetch(`${API_HOST}/notes/${note.id}`, { method: 'DELETE' })
-}
-
-export type EditNoteProps = {
-  note: Note | undefined;
-  onConfirm(note: Note): void;
-  onDiscard(): void;
-}
-
-export const EditNote = (props: EditNoteProps) => {
-  const { note } = props
-
-  let newNoteName, newNoteContent
-
-  const newNote = () => ({
-    id: note?.id,
-    name: newNoteName!.value,
-    content: parseContent(newNoteContent!.value)
-  } as Note)
-
-  return <div class={styles.modal}>
-    <div class={styles["modal-content"]}>
-      <input ref={newNoteName} id="new-note-name" class={styles['modal-name']} placeholder="Note name" value={note?.name}></input>
-      <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10">{note ? contentToString(note?.content).join('\n') : ''}</textarea>
-      <div class={styles['modal-controls']}>
-        <button class={styles.primary} onClick={() => props.onConfirm(newNote())}>{note ? 'Edit' : 'Create'}</button>
-        <button onClick={props.onDiscard}>Discard</button>
-      </div>
-    </div>
-  </div>
-}
-
-function parseContent(value: string): Content {
-  const content: Content = []
-
-  const lines = value.split("\n")
-  for (let line of lines) {
-    // check parent node of current line
-    let at = content
-    while (line.startsWith('  ')) {
-      at = at[at.length - 1]![1]
-      line = line.substring(2)
-    }
-
-    const value: LineFormat = {}
-
-    // check format
-    // 1- checkbox
-    if (line.startsWith('[ ]')) {
-      value.checkbox = true
-      value.check = false
-      line = line.substring(3)
-    } else if (line.startsWith('[x]')) {
-      value.checkbox = true
-      value.check = true
-      line = line.substring(3)
-    }
-
-    // 2- blur
-    if (line.startsWith('[!]')) {
-      value.blur = true
-      line = line.substring(3)
-    }
-
-    value.line = line
-
-    if (line.length)
-      at.push([value, []])
-  }
-
-  return content
 }
 
 export const App: Component = () => {
