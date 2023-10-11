@@ -1,15 +1,18 @@
 import { createSignal } from 'solid-js';
 
-import { Content, Note } from './types';
+import { Content, Note } from '../types';
 
-import styles from './App.module.css';
+import styles from '../App.module.css';
 
 export type NoteProps = {
+  onDelete(note: Note): void;
+  onEdit(note: Note): void;
   note: Note;
 }
 
 export const NoteComponent = (props: NoteProps) => {
   const { note } = props;
+
   const [collapsed, setCollapsed] = createSignal(false);
 
   const toggleNote = () => {
@@ -23,8 +26,8 @@ export const NoteComponent = (props: NoteProps) => {
         <strong class={styles['note-name']}>{note.name}</strong>
       </div>
       <div class={styles['note-controls']}>
-        <a class={styles.button} onClick={() => { }}>✏️</a>
-        <a class={styles.button} onClick={() => { }}>❌</a>
+        <a class={styles.button} onClick={() => props.onEdit(note)}>✏️</a>
+        <a class={styles.button} onClick={() => props.onDelete(note)}>❌</a>
         <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content).join('\n'))}>📋</a>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
 
-import { NoteComponent } from './NoteComponent';
+import { NoteComponent, contentToString } from './components/NoteComponent';
 import { Content, LineFormat, Note } from './types';
 
 import styles from './App.module.css';
@@ -11,8 +11,45 @@ async function fetchNotes() {
   return await fetch(`${API_HOST}/notes`)
 }
 
+async function putNote(note: Note) {
+  return await fetch(`${API_HOST}/notes/${note.id}`, { method: 'PUT', body: JSON.stringify(note), headers: { "Content-Type": "application/json" } })
+}
+
 async function postNote(note: Note) {
   return await fetch(`${API_HOST}/notes`, { method: 'POST', body: JSON.stringify(note), headers: { "Content-Type": "application/json" } })
+}
+
+async function deleteNote(note: Note) {
+  return await fetch(`${API_HOST}/notes/${note.id}`, { method: 'DELETE' })
+}
+
+export type EditNoteProps = {
+  note: Note | undefined;
+  onConfirm(note: Note): void;
+  onDiscard(): void;
+}
+
+export const EditNote = (props: EditNoteProps) => {
+  const { note } = props
+
+  let newNoteName, newNoteContent
+
+  const newNote = () => ({
+    id: note?.id,
+    name: newNoteName!.value,
+    content: parseContent(newNoteContent!.value)
+  } as Note)
+
+  return <div class={styles.modal}>
+    <div class={styles["modal-content"]}>
+      <input ref={newNoteName} id="new-note-name" class={styles['modal-name']} placeholder="Note name" value={note?.name}></input>
+      <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10">{note ? contentToString(note?.content).join('\n') : ''}</textarea>
+      <div class={styles['modal-controls']}>
+        <button class={styles.primary} onClick={() => props.onConfirm(newNote())}>{note ? 'Edit' : 'Create'}</button>
+        <button onClick={props.onDiscard}>Discard</button>
+      </div>
+    </div>
+  </div>
 }
 
 function parseContent(value: string): Content {
@@ -60,8 +97,8 @@ export const App: Component = () => {
 
   const [notes, setNotes] = createSignal<Note[] | undefined>(undefined);
   const [showCreateNote, setShowCreateNote] = createSignal(false);
+  const [currentNote, setCurrentNote] = createSignal<Note | undefined>(undefined);
 
-  let newNoteName, newNoteContent
 
   const refreshNotes = async () => {
 
@@ -73,16 +110,17 @@ export const App: Component = () => {
 
   onMount(async () => {
     await refreshNotes()
-  });
+  })
 
-  const showModal = () => { setShowCreateNote(true); };
-  const createNote = () => {
-    const newNote = {
-      name: newNoteName!.value,
-      content: parseContent(newNoteContent!.value)
-    } as Note
+  const showModal = (note: Note | undefined) => {
+    setCurrentNote(note)
+    setShowCreateNote(true)
+  }
 
-    postNote(newNote)
+  const createNote = (note: Note) => {
+    const promise = note.id ? putNote(note) : postNote(note)
+
+    promise
       .then((response) => {
         // update state
         if (response.ok) {
@@ -94,6 +132,19 @@ export const App: Component = () => {
       })
 
     setShowCreateNote(false)
+  }
+
+  const onDeleteNote = (note: Note): void => {
+    deleteNote(note)
+      .then((response) => {
+        // update state
+        if (response.ok) {
+          refreshNotes()
+        }
+      })
+      .catch(() => {
+        // show error
+      })
   }
 
   const [filter, setFilter] = createSignal("")
@@ -108,16 +159,7 @@ export const App: Component = () => {
       </header>
       <main class={styles.main}>
         <Show when={showCreateNote()}>
-          <div class={styles.modal}>
-            <div class={styles["modal-content"]}>
-              <input ref={newNoteName} id="new-note-name" placeholder="Note name"></input>
-              <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10"></textarea>
-              <div class={styles['modal-controls']}>
-                <button class={styles.primary} onClick={createNote}>Create</button>
-                <button onClick={() => setShowCreateNote(false)}>Discard</button>
-              </div>
-            </div>
-          </div>
+          <EditNote note={currentNote()} onDiscard={() => setShowCreateNote(false)} onConfirm={createNote} />
         </Show>
         <section class={styles.notes}>
           <div style={{ display: 'flex', "align-items": 'center', "margin-bottom": '10px' }}>
@@ -127,13 +169,15 @@ export const App: Component = () => {
           <div id="notes">
             <Switch fallback={<p>Loading...</p>}>
               <Match when={typeof notes() === 'object'}>
-                <For each={notes()!.filter((note) => note.name.toLowerCase().includes(filter().toLowerCase()))}>{(note) => <NoteComponent note={note}></NoteComponent>}</For>
+                <For each={notes()!.filter((note) => note.name.toLowerCase().includes(filter().toLowerCase()))}>{
+                  (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} />
+                }</For>
               </Match>
             </Switch>
           </div>
         </section>
-        <button onClick={showModal}>New</button>
+        <button onClick={() => showModal(undefined)}>New</button>
       </main>
-    </div>
+    </div >
   );
 };

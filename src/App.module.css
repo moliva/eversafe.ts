@@ -97,6 +97,10 @@
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+.modal-name {
+  font-weight: bold;
+}
+
 .modal-content {
   background-color: #282c34;
   border-radius: 10px;
