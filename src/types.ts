@@ -13,3 +13,10 @@ export type Note = {
   name: string;
   content: Content;
 }
+
+export type Identity = {
+  identity: any;
+  token: string
+}
+
+export type IdentityState = Identity | undefined

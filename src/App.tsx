@@ -3,21 +3,19 @@ import { Router, useNavigate } from "@solidjs/router"
 
 import queryString from "query-string";
 
-import { Note } from './types';
+import { IdentityState, Note } from './types';
 
 import { NoteComponent } from './components/NoteComponent';
 import { EditNote } from './components/EditNoteComponent';
 import { Filter } from './components/FilterComponent';
-import { IdentityState, Nav } from './components/NavComponent';
+import { Nav } from './components/NavComponent';
 
-import { deleteNote, fetchNotes, postNote, putNote } from './services';
+import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services';
 
 import styles from './App.module.css';
 
 export const App: Component = () => {
   const [identity, setIdentity] = createSignal<IdentityState>(undefined);
-
-  const navigate = useNavigate();
 
   const [notes, setNotes] = createSignal<Note[] | undefined>(undefined);
 
@@ -26,8 +24,12 @@ export const App: Component = () => {
 
   const [filter, setFilter] = createSignal("")
 
+  const navigate = useNavigate();
+
   const refreshNotes = async () => {
-    const notes = await fetchNotes()
+    const currentIdentity = identity()
+
+    const notes = currentIdentity ? await fetchNotes(currentIdentity) : undefined
 
     setNotes(notes);
   }
@@ -43,8 +45,7 @@ export const App: Component = () => {
     }, true);
   })
 
-
-
+  // handle auth
   const queryArguments = queryString.parse(globalThis.location.search);
 
   const token = queryArguments.login_success;
@@ -63,7 +64,7 @@ export const App: Component = () => {
   }
 
   const createNote = (note: Note) => {
-    const promise = note.id ? putNote(note) : postNote(note)
+    const promise = note.id ? putNote(note, identity()!) : postNote(note, identity()!)
 
     promise
       .then(refreshNotes)
@@ -75,7 +76,7 @@ export const App: Component = () => {
   }
 
   const onDeleteNote = (note: Note): void => {
-    deleteNote(note)
+    deleteNote(note, identity()!)
       .then(refreshNotes)
       .catch(() => {
         // TODO - show error - moliva - 2023/10/11
@@ -87,25 +88,28 @@ export const App: Component = () => {
   return (
     <div class={styles.App}>
       <header class={styles.header}>
-        <Nav identity={identity()} setIdentity={setIdentity} />
+        <Nav identity={identity()} />
       </header>
       <main class={styles.main}>
         <Show when={showNoteModal()}>
           <EditNote note={currentNote()} onDiscard={() => setShowNoteModal(false)} onConfirm={createNote} />
         </Show>
-        <section class={styles.notes}>
-          <Filter value={filter()} onChange={setFilter} />
-          <div id="notes">
+        <section>
+          <div id="notes" class={styles.notes}>
             <Switch fallback={<p>Loading...</p>}>
+              <Match when={typeof identity() === 'undefined'}>
+                <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}>Login</a>
+              </Match>
               <Match when={typeof notes() === 'object'}>
+                <Filter value={filter()} onChange={setFilter} />
                 <For each={filteredNotes()}>{
                   (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} />
                 }</For>
+                <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>
               </Match>
             </Switch>
           </div>
         </section>
-        <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>
       </main>
     </div>
   )

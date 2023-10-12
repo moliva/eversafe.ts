@@ -1,19 +1,13 @@
-import { useNavigate } from "@solidjs/router";
-
 import { API_HOST } from "../services";
 
 import styles from '../App.module.css';
-
-export type IdentityState = { identity: any; token: string } | undefined;
+import { IdentityState } from "../types";
 
 export type NavProps = {
   identity: IdentityState;
-  setIdentity: any
 }
 
 export const Nav = (props: NavProps) => {
-  const navigate = useNavigate();
-
   const identity = props.identity;
 
   return (
@@ -22,9 +16,7 @@ export const Nav = (props: NavProps) => {
         <div style={{ width: "100%", "flex-grow": 1 }}></div>
         {identity ? (
           <>
-            <a class={`${styles.button} ${styles.link}`} href={`/`} >
-              🔓
-            </a>
+            <a class={`${styles.button} ${styles.link}`} href={`/`} >🔓</a>
             <img
               class={`${styles['profile-picture']} ${styles.tiny}`}
               src={identity.identity.picture}
@@ -34,11 +26,7 @@ export const Nav = (props: NavProps) => {
               alt="profile"
             />
           </>
-        ) : (
-          <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}>
-            🔑
-          </a>
-        )
+        ) : (<a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}>🔑</a>)
         }
       </div >
     </nav >

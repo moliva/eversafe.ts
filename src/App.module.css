@@ -223,3 +223,13 @@ button {
 .link {
   text-decoration: none;
 }
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filter {
+  width: 100%;
+}

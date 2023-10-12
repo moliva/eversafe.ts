@@ -8,7 +8,7 @@ export type FilterProps = {
 export const Filter = (props: FilterProps) => {
   const { value, onChange } = props
 
-  return <div style={{ display: 'flex', "align-items": 'center', "margin-bottom": '10px' }}>
+  return <div style={{ display: 'flex', "align-items": 'center', "margin-bottom": '10px', width: '100%' }}>
     <input class={styles['filter-input']} value={value} placeholder="Filter..." onChange={(ev) => onChange(ev.target.value)}></input>
     <button onClick={() => onChange("")} class={styles.button} style={{ "background-color": 'transparent' }}>❌</button>
   </div>
