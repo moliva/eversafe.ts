@@ -20,7 +20,7 @@ export const NoteComponent = (props: NoteProps) => {
     setCollapsed(!collapsed());
   };
 
-  return <div class={styles.note}>
+  return <div class={styles.note} style={{ "background-color": note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
         <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} onClick={toggleNote} />

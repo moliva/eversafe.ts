@@ -1,5 +1,5 @@
 import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
-import { Router, useNavigate } from "@solidjs/router"
+import { useNavigate } from "@solidjs/router"
 
 import queryString from "query-string";
 
@@ -98,7 +98,7 @@ export const App: Component = () => {
           <div id="notes" class={styles.notes}>
             <Switch fallback={<p>Loading...</p>}>
               <Match when={typeof identity() === 'undefined'}>
-                <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}>Login</a>
+                <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}><h1>Login</h1></a>
               </Match>
               <Match when={typeof notes() === 'object'}>
                 <Filter value={filter()} onChange={setFilter} />

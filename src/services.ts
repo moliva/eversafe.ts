@@ -43,11 +43,12 @@ export async function deleteNote(note: Note, identity: Identity) {
 
 async function authentifiedFetch(url: string, identity: Identity, init: RequestInit | undefined = {}) {
   return await fetch(url, {
+    ...init,
     mode: "cors", // no-cors, *cors, same-origin
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     headers: {
       Authorization: identity!.token,
+      ...init.headers,
     },
-    ...init
   })
 }

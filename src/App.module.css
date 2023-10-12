@@ -58,6 +58,12 @@
 /* *************** Note Component *************** */
 /* ***************************************************************************************************** */
 
+.notes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .note {
   /* border: 1px solid white; */
   border-radius: 10px;
@@ -214,6 +220,7 @@ button {
   margin-left: 1rem;
   border-radius: 15%;
 }
+
 .profile-card {
   display: flex;
   margin-bottom: 0.5rem;
@@ -222,12 +229,6 @@ button {
 
 .link {
   text-decoration: none;
-}
-
-.notes {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .filter {

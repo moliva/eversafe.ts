@@ -11,6 +11,7 @@ export type Content = [LineFormat, Content][]
 export type Note = {
   id: number;
   name: string;
+  color: string;
   content: Content;
 }
 
