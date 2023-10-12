@@ -102,9 +102,11 @@ export const App: Component = () => {
               </Match>
               <Match when={typeof notes() === 'object'}>
                 <Filter value={filter()} onChange={setFilter} />
-                <For each={filteredNotes()}>{
-                  (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} />
-                }</For>
+                <div class={styles['note-content']}>
+                  <For each={filteredNotes()}>{
+                    (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} />
+                  }</For>
+                </div>
                 <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>
               </Match>
             </Switch>
