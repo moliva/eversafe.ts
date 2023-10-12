@@ -1,4 +1,7 @@
 import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
+import { Router, useNavigate } from "@solidjs/router"
+
+import queryString from "query-string";
 
 import { Note } from './types';
 
@@ -6,11 +9,17 @@ import { NoteComponent } from './components/NoteComponent';
 import { EditNote } from './components/EditNoteComponent';
 import { Filter } from './components/FilterComponent';
 
-import { deleteNote, fetchNotes, postNote, putNote } from './services';
+import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services';
 
 import styles from './App.module.css';
 
+type IdentityState = { identity: any; token: string } | undefined;
+
 export const App: Component = () => {
+  const [identity, setIdentity] = createSignal<IdentityState>(undefined);
+
+  const navigate = useNavigate();
+
   const [notes, setNotes] = createSignal<Note[] | undefined>(undefined);
 
   const [showNoteModal, setShowNoteModal] = createSignal(false);
@@ -34,6 +43,20 @@ export const App: Component = () => {
       }
     }, true);
   })
+
+
+
+  const queryArguments = queryString.parse(globalThis.location.search);
+
+  const token = queryArguments.login_success;
+  if (!identity() && typeof token === "string") {
+    const idToken = token.split(".")[1];
+    const decoded = atob(idToken);
+    const identity = JSON.parse(decoded);
+
+    setIdentity({ identity, token })
+    navigate("/");
+  }
 
   const showModal = (note: Note | undefined) => {
     setCurrentNote(note)
@@ -65,6 +88,7 @@ export const App: Component = () => {
   return (
     <div class={styles.App}>
       <header class={styles.header}>
+        <Nav identity={identity()} setIdentity={setIdentity} />
       </header>
       <main class={styles.main}>
         <Show when={showNoteModal()}>
@@ -85,6 +109,40 @@ export const App: Component = () => {
         <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>
       </main>
     </div>
+  )
+}
+
+function Nav(props: { identity: IdentityState; setIdentity: any }) {
+  const navigate = useNavigate();
+
+  const identity = props.identity;
+
+  return (
+    <nav class={styles.nav}>
+      <div class={styles['profile-card']}>
+        <div style={{ width: "100%", "flex-grow": 1 }}></div>
+        {identity ? (
+          <>
+            <a class={`${styles.button} ${styles.link}`} href={`/`} >
+              🔓
+            </a>
+            <img
+              class={`${styles['profile-picture']} ${styles.tiny}`}
+              src={identity.identity.picture}
+              title={identity.identity.name}
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              alt="profile"
+            />
+          </>
+        ) : (
+          <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}>
+            🔑
+          </a>
+        )
+        }
+      </div >
+    </nav >
   )
 }
 
