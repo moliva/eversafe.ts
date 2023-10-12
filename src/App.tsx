@@ -8,12 +8,11 @@ import { Note } from './types';
 import { NoteComponent } from './components/NoteComponent';
 import { EditNote } from './components/EditNoteComponent';
 import { Filter } from './components/FilterComponent';
+import { IdentityState, Nav } from './components/NavComponent';
 
-import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services';
+import { deleteNote, fetchNotes, postNote, putNote } from './services';
 
 import styles from './App.module.css';
-
-type IdentityState = { identity: any; token: string } | undefined;
 
 export const App: Component = () => {
   const [identity, setIdentity] = createSignal<IdentityState>(undefined);
@@ -109,40 +108,6 @@ export const App: Component = () => {
         <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>
       </main>
     </div>
-  )
-}
-
-function Nav(props: { identity: IdentityState; setIdentity: any }) {
-  const navigate = useNavigate();
-
-  const identity = props.identity;
-
-  return (
-    <nav class={styles.nav}>
-      <div class={styles['profile-card']}>
-        <div style={{ width: "100%", "flex-grow": 1 }}></div>
-        {identity ? (
-          <>
-            <a class={`${styles.button} ${styles.link}`} href={`/`} >
-              🔓
-            </a>
-            <img
-              class={`${styles['profile-picture']} ${styles.tiny}`}
-              src={identity.identity.picture}
-              title={identity.identity.name}
-              crossOrigin="anonymous"
-              referrerPolicy="no-referrer"
-              alt="profile"
-            />
-          </>
-        ) : (
-          <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}>
-            🔑
-          </a>
-        )
-        }
-      </div >
-    </nav >
   )
 }
 
