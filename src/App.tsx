@@ -28,7 +28,6 @@ export const App: Component = () => {
     const currentIdentity = identity()
 
     const notes = currentIdentity ? await fetchNotes(currentIdentity) : undefined
-
     setNotes(notes)
   }
 

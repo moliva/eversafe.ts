@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "eversafe",
+  "version": "0.1.0",
+  "description": "Personal notes app",
   "scripts": {
     "start": "vite",
     "dev": "vite",
