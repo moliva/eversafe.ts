@@ -276,9 +276,9 @@ button {
   display : flex;
   align-items : center;
   height : 30px;
-  cursor : pointer;
 }
 
 .content-show-blur {
   padding-left: 3px;
+  cursor: pointer;
 }

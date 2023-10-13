@@ -1,4 +1,4 @@
-import { For } from 'solid-js';
+import { For, createSignal } from 'solid-js';
 
 import { Content } from "../types"
 import { copyToClipboard } from '../utils';
@@ -18,20 +18,22 @@ export const ContentComponent = (props: ContentProps) => {
       ([key, value]) => {
         let keyLabelRef: any
 
+        const [showMenu, setShowMenu] = createSignal(false)
+        const [blur, setBlur] = createSignal(!!key.blur)
+
         return <>
-          <div class={styles['content-key']}>
+          <div class={styles['content-key']}
+            onMouseEnter={() => setShowMenu(true)}
+            onMouseLeave={() => setShowMenu(false)}
+          >
             {key.checkbox ? <input type="checkbox" checked={!!key.check} onClick={() => {
               // TODO - update the note content! - moliva - 2023/10/09
             }} /> : null}
-            <p ref={keyLabelRef} class={key.blur ? styles.blur : ''}>{key.line}</p>
-            {key.blur ? <a class={styles['content-show-blur']} onClick={() => {
-              if (keyLabelRef.className.includes(styles.blur)) {
-                keyLabelRef.className = keyLabelRef.className.replaceAll(styles.blur, '')
-              } else {
-                keyLabelRef.className = ` ${styles.blur}`
-              }
-            }}>&#128065</a> : null}
-            <a class={styles['content-show-blur']} onClick={() => { copyToClipboard(key.line!) }}>&#x1f4cb</a>
+            <p ref={keyLabelRef} class={blur() ? styles.blur : ''}>{key.line}</p>
+            {showMenu() ? <>
+              {key.blur ? <a class={styles['content-show-blur']} onClick={() => { setBlur(!blur()) }}>&#128065</a> : null}
+              <a class={styles['content-show-blur']} onClick={() => { copyToClipboard(key.line!) }}>&#x1f4cb</a>
+            </> : null}
           </div>
           <ContentComponent content={value} />
         </>
