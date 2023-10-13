@@ -1,7 +1,5 @@
 import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js'
-import { useNavigate } from "@solidjs/router"
-
-import queryString from "query-string"
+import { useNavigate, useSearchParams } from "@solidjs/router"
 
 import { IdentityState, Note } from './types'
 
@@ -46,9 +44,9 @@ export const App: Component = () => {
   })
 
   // handle auth
-  const queryArguments = queryString.parse(globalThis.location.search)
+  const [searchParams] = useSearchParams()
 
-  const token = queryArguments.login_success
+  const token = searchParams.login_success
   if (!identity() && typeof token === "string") {
     const idToken = token.split(".")[1]
     const decoded = atob(idToken)
