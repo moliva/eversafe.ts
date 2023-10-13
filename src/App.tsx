@@ -63,6 +63,16 @@ export const App: Component = () => {
     setShowNoteModal(true)
   }
 
+  const onModifiedNote = (note: Note) => {
+    const promise = putNote(note, identity()!)
+
+    promise
+      .then(refreshNotes)
+      .catch(() => {
+        // TODO - show error - moliva - 2023/10/11
+      })
+  }
+
   const createNote = (note: Note) => {
     const promise = note.id ? putNote(note, identity()!) : postNote(note, identity()!)
 
@@ -104,7 +114,7 @@ export const App: Component = () => {
                 <Filter value={filter()} onChange={setFilter} />
                 <div class={styles['note-content']}>
                   <For each={filteredNotes()}>{
-                    (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} />
+                    (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} onModified={onModifiedNote} />
                   }</For>
                 </div>
                 <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>

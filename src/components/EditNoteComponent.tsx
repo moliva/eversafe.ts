@@ -25,7 +25,7 @@ export const EditNote = (props: EditNoteProps) => {
   return <div class={styles.modal}>
     <div class={styles["modal-content"]}>
       <input ref={newNoteName} id="new-note-name" class={styles['modal-name']} placeholder="Note name" value={note?.name ?? ''}></input>
-      <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10">{note ? contentToString(note?.content).join('\n') : ''}</textarea>
+      <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10">{note ? contentToString(note?.content) : ''}</textarea>
       <div class={styles['modal-controls']}>
         <input ref={colorRef} type="color" value={note?.color ?? '#404040'} />
         <button class={styles.primary} onClick={() => props.onConfirm(newNote())}>{note ? 'Edit' : 'Create'}</button>

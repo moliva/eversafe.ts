@@ -1,4 +1,5 @@
 import { createSignal } from 'solid-js';
+import { deepCopy } from "deep-copy-ts";
 
 import { Note } from '../types';
 import { contentToString, copyToClipboard } from '../utils';
@@ -9,6 +10,7 @@ import { ContentComponent } from './ContentComponent';
 export type NoteProps = {
   onDelete(note: Note): void;
   onEdit(note: Note): void;
+  onModified(note: Note): void;
   note: Note;
 }
 
@@ -21,6 +23,21 @@ export const NoteComponent = (props: NoteProps) => {
     setCollapsed(!collapsed());
   };
 
+  const onCheckToggle = (indices: number[]) => {
+    const copy = deepCopy(note)
+    let check = copy.content
+    let last
+    for (const index of indices) {
+      last = check[index]
+      check = last[1]
+    }
+
+    last = (last as any)[0]
+    last.check = !last.check
+
+    props.onModified(copy)
+  }
+
   return <div class={styles.note} style={{ "background-color": note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
@@ -30,9 +47,9 @@ export const NoteComponent = (props: NoteProps) => {
       <div class={styles['note-controls']}>
         <a class={styles.button} onClick={() => props.onEdit(note)}>✏️</a>
         <a class={styles.button} onClick={() => props.onDelete(note)}>❌</a>
-        <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content).join('\n'))}>📋</a>
+        <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content))}>📋</a>
       </div>
     </div>
-    {collapsed() ? null : <ContentComponent content={note.content} initial />}
+    {collapsed() ? null : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />}
   </div>;
 }

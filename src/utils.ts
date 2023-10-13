@@ -1,11 +1,15 @@
-import { Content, LineFormat } from "./types"
+import { Content, LineFormat, Note } from "./types"
 
 
 export function copyToClipboard(value: string): void {
   navigator.clipboard.writeText(value)
 }
 
-export function contentToString(content: Content, indent: string = '', acc: string[] = []): string[] {
+export function contentToString(content: Content): string {
+  return collectContent(content).join("\n")
+}
+
+export function collectContent(content: Content, indent: string = '', acc: string[] = []): string[] {
   for (const [key, value] of content) {
     let line = indent
 
@@ -21,7 +25,7 @@ export function contentToString(content: Content, indent: string = '', acc: stri
 
     acc.push(line)
 
-    contentToString(value, indent + '  ', acc)
+    collectContent(value, indent + '  ', acc)
   }
   return acc
 }
