@@ -41,7 +41,7 @@ export const NoteComponent = (props: NoteProps) => {
   return <div class={styles.note} style={{ "background-color": note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
-        <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} onClick={toggleNote} />
+        <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} style={{ 'margin-right': '5px' }} onClick={toggleNote} />
         <strong class={styles['note-name']}>{note.name}</strong>
       </div>
       <div class={styles['note-controls']}>
