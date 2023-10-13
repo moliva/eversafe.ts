@@ -260,3 +260,25 @@ button {
   max-width: 600px;
 }
 
+/* ***************************************************************************************************** */
+/* *************** Content *************** */
+/* ***************************************************************************************************** */
+
+.content {
+  padding-left: 10px;
+}
+
+.content-initial {
+  padding-left: 15px;
+}
+
+.content-key {
+  display : flex;
+  align-items : center;
+  height : 30px;
+  cursor : pointer;
+}
+
+.content-show-blur {
+  padding-left: 3px;
+}
