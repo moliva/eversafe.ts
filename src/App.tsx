@@ -112,10 +112,10 @@ export const App: Component = () => {
                 <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}><h1>Login</h1></a>
               </Match>
               <Match when={typeof notes() === 'object'}>
-                <Filter value={filter()} onChange={setFilter} />
+                <Filter value={filter} onChange={setFilter} />
                 <div class={styles['note-content']}>
                   <For each={filteredNotes()}>{
-                    (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} onModified={onModifiedNote} />
+                    (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} onModified={onModifiedNote} onTagClicked={setFilter} />
                   }</For>
                 </div>
                 <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>

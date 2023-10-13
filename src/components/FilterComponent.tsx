@@ -1,7 +1,8 @@
+import { Accessor } from 'solid-js'
 import styles from '../App.module.css'
 
 export type FilterProps = {
-  value: string
+  value: Accessor<string>
   onChange(value: string): void
 }
 
@@ -9,7 +10,7 @@ export const Filter = (props: FilterProps) => {
   const { value, onChange } = props
 
   return <div class={styles.filter}>
-    <input class={styles['filter-input']} value={value} placeholder="Filter..." onChange={(ev) => onChange(ev.target.value)}></input>
+    <input class={styles['filter-input']} value={value()} placeholder="Filter..." onChange={(ev) => onChange(ev.target.value)}></input>
     <button onClick={() => onChange("")} class={styles.button} style={{ "background-color": 'transparent' }}>❌</button>
   </div>
 }

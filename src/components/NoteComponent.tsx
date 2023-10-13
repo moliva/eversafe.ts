@@ -4,14 +4,17 @@ import { deepCopy } from "deep-copy-ts"
 import { Note } from '../types'
 import { contentToString, copyToClipboard } from '../utils'
 
-import styles from '../App.module.css'
 import { ContentComponent } from './ContentComponent'
 
+import styles from '../App.module.css'
+
 export type NoteProps = {
+  note: Note
+
   onDelete(note: Note): void
   onEdit(note: Note): void
   onModified(note: Note): void
-  note: Note
+  onTagClicked(tag: string): void
 }
 
 export const NoteComponent = (props: NoteProps) => {
@@ -52,7 +55,7 @@ export const NoteComponent = (props: NoteProps) => {
     </div>
     <div class={styles['note-tags']}>
       <For each={note.tags}>{
-        (tag) => <label class={styles['note-tag']}>{tag}</label>
+        (tag) => <label class={`${styles['note-tag']} ${styles['button']}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
       }</For>
     </div>
     {collapsed() ? null : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />}
