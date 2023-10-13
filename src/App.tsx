@@ -1,37 +1,37 @@
-import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js';
+import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js'
 import { useNavigate } from "@solidjs/router"
 
-import queryString from "query-string";
+import queryString from "query-string"
 
-import { IdentityState, Note } from './types';
+import { IdentityState, Note } from './types'
 
-import { NoteComponent } from './components/NoteComponent';
-import { EditNote } from './components/EditNoteComponent';
-import { Filter } from './components/FilterComponent';
-import { Nav } from './components/NavComponent';
+import { NoteComponent } from './components/NoteComponent'
+import { EditNote } from './components/EditNoteComponent'
+import { Filter } from './components/FilterComponent'
+import { Nav } from './components/NavComponent'
 
-import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services';
+import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services'
 
-import styles from './App.module.css';
+import styles from './App.module.css'
 
 export const App: Component = () => {
-  const [identity, setIdentity] = createSignal<IdentityState>(undefined);
+  const [identity, setIdentity] = createSignal<IdentityState>(undefined)
 
-  const [notes, setNotes] = createSignal<Note[] | undefined>(undefined);
+  const [notes, setNotes] = createSignal<Note[] | undefined>(undefined)
 
-  const [showNoteModal, setShowNoteModal] = createSignal(false);
-  const [currentNote, setCurrentNote] = createSignal<Note | undefined>(undefined);
+  const [showNoteModal, setShowNoteModal] = createSignal(false)
+  const [currentNote, setCurrentNote] = createSignal<Note | undefined>(undefined)
 
   const [filter, setFilter] = createSignal("")
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const refreshNotes = async () => {
     const currentIdentity = identity()
 
     const notes = currentIdentity ? await fetchNotes(currentIdentity) : undefined
 
-    setNotes(notes);
+    setNotes(notes)
   }
 
   onMount(async () => {
@@ -40,22 +40,22 @@ export const App: Component = () => {
     window.addEventListener('keyup', function(e) {
       if (e.key == 'Escape' || e.key == 'Esc') {
         setShowNoteModal(false)
-        return false;
+        return false
       }
-    }, true);
+    }, true)
   })
 
   // handle auth
-  const queryArguments = queryString.parse(globalThis.location.search);
+  const queryArguments = queryString.parse(globalThis.location.search)
 
-  const token = queryArguments.login_success;
+  const token = queryArguments.login_success
   if (!identity() && typeof token === "string") {
-    const idToken = token.split(".")[1];
-    const decoded = atob(idToken);
-    const identity = JSON.parse(decoded);
+    const idToken = token.split(".")[1]
+    const decoded = atob(idToken)
+    const identity = JSON.parse(decoded)
 
     setIdentity({ identity, token })
-    navigate("/");
+    navigate("/")
   }
 
   const showModal = (note: Note | undefined) => {

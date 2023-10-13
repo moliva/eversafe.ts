@@ -1,13 +1,13 @@
-import { Note } from "../types";
+import { Note } from "../types"
 
-import { contentToString, parseContent } from "../utils";
+import { contentToString, parseContent } from "../utils"
 
-import styles from '../App.module.css';
+import styles from '../App.module.css'
 
 export type EditNoteProps = {
-  note: Note | undefined;
-  onConfirm(note: Note): void;
-  onDiscard(): void;
+  note: Note | undefined
+  onConfirm(note: Note): void
+  onDiscard(): void
 }
 
 export const EditNote = (props: EditNoteProps) => {

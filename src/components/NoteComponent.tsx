@@ -1,27 +1,27 @@
-import { createSignal } from 'solid-js';
-import { deepCopy } from "deep-copy-ts";
+import { createSignal } from 'solid-js'
+import { deepCopy } from "deep-copy-ts"
 
-import { Note } from '../types';
-import { contentToString, copyToClipboard } from '../utils';
+import { Note } from '../types'
+import { contentToString, copyToClipboard } from '../utils'
 
-import styles from '../App.module.css';
-import { ContentComponent } from './ContentComponent';
+import styles from '../App.module.css'
+import { ContentComponent } from './ContentComponent'
 
 export type NoteProps = {
-  onDelete(note: Note): void;
-  onEdit(note: Note): void;
-  onModified(note: Note): void;
-  note: Note;
+  onDelete(note: Note): void
+  onEdit(note: Note): void
+  onModified(note: Note): void
+  note: Note
 }
 
 export const NoteComponent = (props: NoteProps) => {
-  const { note } = props;
+  const { note } = props
 
-  const [collapsed, setCollapsed] = createSignal(false);
+  const [collapsed, setCollapsed] = createSignal(false)
 
   const toggleNote = () => {
-    setCollapsed(!collapsed());
-  };
+    setCollapsed(!collapsed())
+  }
 
   const onCheckToggle = (indices: number[]) => {
     const copy = deepCopy(note)
@@ -51,5 +51,5 @@ export const NoteComponent = (props: NoteProps) => {
       </div>
     </div>
     {collapsed() ? null : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />}
-  </div>;
+  </div>
 }

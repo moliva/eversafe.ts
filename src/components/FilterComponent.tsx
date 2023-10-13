@@ -1,8 +1,8 @@
-import styles from '../App.module.css';
+import styles from '../App.module.css'
 
 export type FilterProps = {
-  value: string;
-  onChange(value: string): void;
+  value: string
+  onChange(value: string): void
 }
 
 export const Filter = (props: FilterProps) => {

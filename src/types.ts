@@ -1,22 +1,22 @@
 
 export type LineFormat = {
-  line?: string;
-  checkbox?: boolean;
-  check?: boolean;
-  blur?: boolean;
+  line?: string
+  checkbox?: boolean
+  check?: boolean
+  blur?: boolean
 }
 
 export type Content = [LineFormat, Content][]
 
 export type Note = {
-  id: number;
-  name: string;
-  color: string;
-  content: Content;
+  id: number
+  name: string
+  color: string
+  content: Content
 }
 
 export type Identity = {
-  identity: any;
+  identity: any
   token: string
 }
 

@@ -1,9 +1,9 @@
-import { For, createSignal } from 'solid-js';
+import { For, createSignal } from 'solid-js'
 
 import { Content } from "../types"
-import { copyToClipboard } from '../utils';
+import { copyToClipboard } from '../utils'
 
-import styles from '../App.module.css';
+import styles from '../App.module.css'
 
 export type ContentProps = {
   initial?: boolean
