@@ -1,4 +1,4 @@
-import { createSignal } from 'solid-js'
+import { For, createSignal } from 'solid-js'
 import { deepCopy } from "deep-copy-ts"
 
 import { Note } from '../types'
@@ -49,6 +49,11 @@ export const NoteComponent = (props: NoteProps) => {
         <a class={styles.button} onClick={() => props.onDelete(note)}>❌</a>
         <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content))}>📋</a>
       </div>
+    </div>
+    <div class={styles['note-tags']}>
+      <For each={note.tags}>{
+        (tag) => <label class={styles['note-tag']}>{tag}</label>
+      }</For>
     </div>
     {collapsed() ? null : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />}
   </div>

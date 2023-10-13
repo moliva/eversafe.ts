@@ -90,7 +90,11 @@ export const App: Component = () => {
       })
   }
 
-  const filteredNotes = () => notes()!.filter((note) => note.name.toLowerCase().includes(filter().toLowerCase()))
+  const filteredNotes = () => notes()!.filter((note) => {
+    const lowered = filter().toLowerCase()
+
+    return note.name.toLowerCase().includes(lowered) || note.tags.some((tag) => tag.includes(lowered))
+  })
 
   return (
     <div class={styles.App}>

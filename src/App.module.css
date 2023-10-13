@@ -84,7 +84,13 @@ body {
   gap: 5px;
   flex-wrap: wrap;
   margin-bottom: 15px;
-  justify-content:center;
+}
+
+/* TODO - fix this when screen is smaller - moliva - 2023/10/12 */
+@media only screen and (max-width: 600px) {
+  .note-content {
+     justify-content:center;
+  }
 }
 
 .note {
@@ -281,4 +287,23 @@ button {
 .content-show-blur {
   padding-left: 3px;
   cursor: pointer;
+}
+
+/* ***************************************************************************************************** */
+/* *************** Tags *************** */
+/* ***************************************************************************************************** */
+
+.note-tags {
+  display: flex;
+  gap: 2px;
+  padding-left: 15px;
+  margin-top: 5px;
+}
+
+.note-tag {
+  font-size: 10px;
+  border: solid 0.1px;
+  border-radius: 4px;
+  padding: 2px 3px;
+  border-color: white;
 }

@@ -13,6 +13,7 @@ export type Note = {
   name: string
   color: string
   content: Content
+  tags: string[]
 }
 
 export type Identity = {
