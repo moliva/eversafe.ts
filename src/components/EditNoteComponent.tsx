@@ -11,7 +11,7 @@ export type EditNoteProps = {
 }
 
 export function parseTags(tagString: string): string[] {
-  return tagString.split(',').map((line) => line.trim().toLowerCase())
+  return tagString.split(',').filter(line => line.length).map((line) => line.trim().toLowerCase())
 }
 
 export const EditNote = (props: EditNoteProps) => {
