@@ -22,14 +22,13 @@ export const ContentComponent = (props: ContentProps) => {
         const [blur, setBlur] = createSignal(!!key.blur)
 
         return <>
-          <div class={styles['content-key']}
-            onMouseEnter={() => setShowMenu(true)}
-            onMouseLeave={() => setShowMenu(false)}
-          >
+          <div class={styles['content-key']} onMouseEnter={() => setShowMenu(true)} onMouseLeave={() => setShowMenu(false)}>
             {key.checkbox ? <input type="checkbox" checked={!!key.check} onClick={() => {
               // TODO - update the note content! - moliva - 2023/10/09
             }} /> : null}
-            <p ref={keyLabelRef} class={blur() ? styles.blur : ''}>{key.line}</p>
+            {key.line?.startsWith('http://') || key.line?.startsWith('https://')
+              ? (<a ref={keyLabelRef} href={key.line} target="_blank" class={`${styles.link} ${blur() ? styles.blur : ''}`}>{key.line}</a>)
+              : (<p ref={keyLabelRef} class={blur() ? styles.blur : ''}>{key.line}</p>)}
             {showMenu() ? <>
               {key.blur ? <a class={styles['content-show-blur']} onClick={() => { setBlur(!blur()) }}>&#128065</a> : null}
               <a class={styles['content-show-blur']} onClick={() => { copyToClipboard(key.line!) }}>&#x1f4cb</a>
