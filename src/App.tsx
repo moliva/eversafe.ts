@@ -52,7 +52,7 @@ export const App: Component = () => {
     const identity = JSON.parse(decoded)
 
     setIdentity({ identity, token })
-    navigate("/")
+    navigate(import.meta.env.BASE_URL)
   }
 
   const showModal = (note: Note | undefined) => {
