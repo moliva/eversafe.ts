@@ -1,6 +1,6 @@
 import { Identity, Note } from "./types";
 
-export const API_HOST = "http://localhost:9000";
+export const API_HOST = import.meta.env.VITE_API_URL
 
 export async function fetchNotes(identity: Identity): Promise<Note[]> {
   const res = await authentifiedFetch(`${API_HOST}/notes`, identity!)
