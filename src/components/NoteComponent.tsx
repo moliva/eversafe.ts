@@ -41,7 +41,7 @@ export const NoteComponent = (props: NoteProps) => {
     props.onModified(copy)
   }
 
-  return <div class={styles.note} style={{ "background-color": note.color }}>
+  return <div id={`note-${note.id}`} class={styles.note} style={{ "background-color": note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
         <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} style={{ 'margin-right': '5px' }} onClick={toggleNote} />

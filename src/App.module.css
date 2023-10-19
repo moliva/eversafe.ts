@@ -97,6 +97,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
+  height: fit-content;
 }
 
 /* TODO - fix this when screen is smaller - moliva - 2023/10/12 */
