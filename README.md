@@ -14,6 +14,10 @@ $ npm install # or pnpm install or yarn install
 
 In the project directory, you can run:
 
+### .env files
+
+For running in development env create a `.env` based on the `.env-example` file and for building the production image, make sure to have a `.env.production` one.
+
 ### `npm run dev` or `npm start`
 
 Runs the app in the development mode.<br>
@@ -32,3 +36,17 @@ Your app is ready to be deployed!
 ## Deployment
 
 You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+
+### Create a new Docker image
+
+Run:
+
+```bash
+./build-docker.sh
+```
+
+Make sure the image works as expected and publish it by using, just make sure to edit the current file to upgrade the image version:
+
+```bash
+./build-docker.sh -p
+```
