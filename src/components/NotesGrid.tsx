@@ -10,7 +10,6 @@ export const NotesGrid = (props: NotesGridProps) => {
   const l = children(() => props.children)
   const [notesRef, setNotesRef] = createSignal<HTMLElement | undefined>()
   const [columnLength, setColumnLength] = createSignal<number | undefined>()
-  const [noteSizes, setNoteSizes] = createSignal()
   const [noteMap, setNoteMap] = createSignal<Map<number, HTMLElement[]> | undefined>()
 
   const observer = new ResizeObserver(resize)
@@ -51,15 +50,15 @@ export const NotesGrid = (props: NotesGridProps) => {
     window.removeEventListener('resize', handler)
   })
 
-  const toValue = (c: HTMLElement[]): string => JSON.stringify(c.map(child => child.innerHTML))
+  const equalNotesLength = (c: HTMLElement[]): boolean => !!noteMap() && c.length === Array.from(noteMap()!.values()).reduce((a, i) => i.length + a, 0)
 
-  function resize(entries: ResizeObserverEntry[]) {
+  function resize() {
     const notes = notesRef()
     if (notes) {
       const c = l()! as HTMLElement[]
 
       let newMap1: Map<number, HTMLElement[]>
-      if (noteMap() && c[0].getBoundingClientRect().height === 0 && c.length === Array.from(noteMap()!.values()).reduce((a, i) => i.length + a, 0)) {
+      if (noteMap() && c[0].getBoundingClientRect().height === 0 && equalNotesLength(c)) {
         const newMap = new Map()
         for (const key of noteMap()!.keys()) {
           newMap.set(key, [])
@@ -114,6 +113,10 @@ export const NotesGrid = (props: NotesGridProps) => {
 
     for (const child of c) {
       observer.observe(child)
+    }
+
+    if (!equalNotesLength(c)) {
+      resize()
     }
   })
 
