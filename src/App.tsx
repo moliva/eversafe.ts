@@ -1,4 +1,4 @@
-import { createSignal, type Component, For, onMount, Switch, Match, Show } from 'solid-js'
+import { createSignal, type Component, For, onMount, Switch, Match, Show, createEffect, onCleanup } from 'solid-js'
 import { useNavigate, useSearchParams } from "@solidjs/router"
 
 import { IdentityState, Note } from './types'
@@ -96,6 +96,39 @@ export const App: Component = () => {
     return note.name.toLowerCase().includes(lowered) || note.tags.some((tag) => tag.includes(lowered))
   })
 
+  const [notesRef, setNotesRef] = createSignal<HTMLElement | undefined>()
+  const [columns, setColumns] = createSignal<number | undefined>()
+
+  const handler = () => {
+    if (notesRef()) {
+      const width = notesRef()!.getBoundingClientRect().width
+      console.log('width', width)
+      const columns = Math.floor(width / 425)
+
+      console.log('columns', columns)
+      setColumns(columns)
+    }
+
+    // each note - 420 width
+    // gap - 5
+  }
+
+  createEffect(() => {
+    handler()
+  })
+
+  onMount(() => {
+    window.addEventListener('resize', handler)
+  });
+
+  onCleanup(() => {
+    window.removeEventListener('resize', handler)
+  })
+
+  function isColumn(column: number) {
+    return function(v: any, i: number, array: any) { return i % columns()! === column }
+  }
+
   return (
     <div class={styles.App}>
       <header class={styles.header}>
@@ -105,26 +138,30 @@ export const App: Component = () => {
         <Show when={showNoteModal()}>
           <EditNote note={currentNote()} onDiscard={() => setShowNoteModal(false)} onConfirm={createNote} />
         </Show>
-        <section>
-          <div id="notes" class={styles.notes}>
+        <section style={{ width: '100%' }}>
+          <div class={styles.notes}>
             <Switch fallback={<p>Loading...</p>}>
               <Match when={typeof identity() === 'undefined'}>
                 <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}><h1>Login</h1></a>
               </Match>
               <Match when={typeof notes() === 'object'}>
                 <Filter value={filter} onChange={setFilter} />
-                <div class={styles['note-content']}>
-                  <For each={filteredNotes()}>{
-                    (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} onModified={onModifiedNote} onTagClicked={setFilter} />
-                  }</For>
+                <div ref={setNotesRef} class={styles['note-content']}>
+                  <For each={[...Array(columns()).keys()]}>{
+                    (column) => <div class={styles['notes-column']}>
+                                            <For each={filteredNotes().filter(isColumn(column))}>{
+                                              (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} onModified={onModifiedNote} onTagClicked={setFilter} />
+                                            }</For>
+                                          </div>
+                                        }</For>
                 </div>
-                <button class={styles.primary} onClick={() => showModal(undefined)}>New</button>
+                <button style={{ "margin-bottom": "10px" }} class={styles.primary} onClick={() => showModal(undefined)}>New</button>
               </Match>
             </Switch>
           </div>
-        </section>
-      </main>
-    </div>
+        </section >
+      </main >
+    </div >
   )
 }
 

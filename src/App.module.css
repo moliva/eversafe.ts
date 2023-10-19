@@ -75,17 +75,28 @@ body {
 /* ***************************************************************************************************** */
 
 .notes {
+  width: 100%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .note-content {
+  width: 100%;
+
   display: flex;
+  gap: 5px;
+  justify-content: center;
+
+  margin-bottom: 15px;
+}
+
+.notes-column {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
   gap: 5px;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
 }
 
 /* TODO - fix this when screen is smaller - moliva - 2023/10/12 */
