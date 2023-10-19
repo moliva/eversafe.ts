@@ -7,21 +7,36 @@ export type NotesGridProps = {
 }
 
 export const NotesGrid = (props: NotesGridProps) => {
+  const l = children(() => props.children)
   const [notesRef, setNotesRef] = createSignal<HTMLElement | undefined>()
   const [columnLength, setColumnLength] = createSignal<number | undefined>()
 
-  function isColumn(column: number) {
-    return function(v: any, i: number, array: any) { return i % columnLength()! === column }
-  }
+  const observer = new ResizeObserver(resize)
 
   const handler = () => {
     if (notesRef()) {
       const width = notesRef()!.getBoundingClientRect().width
       console.log('width', width)
-      const columns = Math.floor(width / 425)
+      const colLen = Math.floor(width / 425)
 
-      console.log('columnLength', columns)
-      setColumnLength(columns)
+      console.log('columnLength', colLen)
+      if (columnLength() === colLen) {
+        return
+      }
+
+      setColumnLength(colLen)
+
+      for (let i = 0; i < notesRef()!.children.length; ++i) {
+        const column = notesRef()!.children.item(i)!
+        column.remove()
+      }
+
+      for (let i = 0; i < colLen; ++i) {
+        const column = document.createElement("div")
+        column.className = styles['notes-column']
+
+        notesRef()?.appendChild(column)
+      }
     }
 
     // each note - 420 width
@@ -40,45 +55,72 @@ export const NotesGrid = (props: NotesGridProps) => {
     window.removeEventListener('resize', handler)
   })
 
-  const c = children(() => props.children)   .toArray() as HTMLElement[]
+  function resize() {
+    return () => {
+      if (notesRef()) {
+        const c = l()! as HTMLElement[]
 
-  const [columnNoteMap, setColumnNoteMap] = createSignal(new Map<number, HTMLElement[]>())
+debugger
+        const newMap = new Map<number, HTMLElement[]>()
+        for (const column of [...Array(columnLength()).keys()]) {
+          newMap.set(column, [])
+        }
 
-  const observer = new ResizeObserver(() => {
-    const newMap = new Map<number, HTMLElement[]>()
-    for (const column of [...Array(columnLength()).keys()]) {
-      newMap.set(column, [])
+        const columnHeight = (column: number) => newMap.get(column)!.reduce((a, e) => e.getBoundingClientRect().height + a, 0)
+
+        const minColumnHeight = () => {
+          const entries = Array.from(newMap.entries())
+          return entries.reduce((previous, current) => columnHeight(current[0]) < columnHeight(previous[0]) ? current : previous, entries.shift()!)
+        }
+
+        for (const child of c) {
+          const column = minColumnHeight()
+          console.log('child.getBoundingClientRect()', child.getBoundingClientRect())
+
+          column[1].push(child)
+        }
+
+        console.log('newMap', newMap)
+
+        for (let i = 0; i < notesRef()!.children.length; ++i) {
+          const column = notesRef()!.children.item(i)!
+          const newColumn = newMap.get(i)!
+          for (let j = 0; j < column.children.length; ++j) {
+            const item = column.children.item(j)! as HTMLElement
+            if (!newColumn.includes(item))
+              column.removeChild(item)
+          }
+
+          console.log('column.children', JSON.stringify(column.children))
+          for (const item of newMap.get(i)!) {
+            // if (!column.includes(item  as HTMLElement))
+            column.appendChild(item)
+          }
+          console.log('column.children', JSON.stringify(column.children))
+        }
+      }
     }
-
-    const columnHeight = (column: number) => newMap.get(column)!.reduce((a, e) => e.getBoundingClientRect().height + a, 0)
-
-    const minColumnHeight = () => {
-      const entries = Array.from(newMap.entries())
-      return entries.reduce((previous, current) => columnHeight(current[0]) < columnHeight(previous[0]) ? current : previous, entries.pop()!)
-    }
-
-    for (const child of c) {
-      const column = minColumnHeight()
-
-      column[1].push(child)
-    }
-
-    console.log('newMap', newMap)
-    setColumnNoteMap(newMap)
-  })
-
-  for (const child of c) {
-    observer.observe(child)
   }
 
+  createEffect(() => {
+    const c = l()! as HTMLElement[]
+
+    console.log('c', c)
+
+    for (const child of c) {
+      observer.observe(child)
+    }
+
+    resize()()
+    resize()()
+
+  })
 
 
-        // {columnNoteMap().size === 0 ? c : columnNoteMap().get(column)!}
+
+
+
+  // {columnNoteMap().size === 0 ? c : columnNoteMap().get(column)!}
   return <div ref={setNotesRef} class={styles['note-content']}>
-    <For each={[...Array(columnLength()).keys()]}>{
-      (column) => <div class={styles['notes-column']}>
-        {c.slice()}
-      </div>
-    }</For>
   </div>
 }

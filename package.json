@@ -18,6 +18,6 @@
   "dependencies": {
     "@solidjs/router": "^0.8.3",
     "deep-copy-ts": "^0.5.4",
-    "solid-js": "^1.7.6"
+    "solid-js": "^1.8"
   }
 }
