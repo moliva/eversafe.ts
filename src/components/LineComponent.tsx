@@ -17,8 +17,8 @@ export const LineComponent = (props: LineProps) => {
   const [showMenu, setShowMenu] = createSignal(false)
   const [blur, setBlur] = createSignal(!!key.blur)
 
-  const keyLine = key.line?.startsWith('http://') || key.line?.startsWith('https://')
-    ? <a classList={{ [styles.blur]: blur() }} href={key.line} target="_blank" class={styles.link}>{key.line}</a>
+  const keyLine = key.link || key.line?.startsWith('http://') || key.line?.startsWith('https://')
+    ? <a classList={{ [styles.blur]: blur() }} href={key.link ?? key.line} target="_blank" class={styles.link}>{key.line}</a>
     : <p classList={{ [styles.blur]: blur() }}>{key.line}</p>
 
   return <div class={styles['content-key']} onMouseEnter={() => setShowMenu(true)} onMouseLeave={() => setShowMenu(false)}>

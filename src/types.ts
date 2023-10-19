@@ -4,6 +4,7 @@ export type LineFormat = {
   checkbox?: boolean
   check?: boolean
   blur?: boolean
+  link?: string
 }
 
 export type Content = [LineFormat, Content][]

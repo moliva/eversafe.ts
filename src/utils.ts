@@ -1,15 +1,20 @@
-import { Content, LineFormat, Note } from "./types"
-
+import { Content, LineFormat } from "./types"
 
 export function copyToClipboard(value: string): void {
   navigator.clipboard.writeText(value)
 }
 
+/**
+  * Takes a Content object and turns it into a string
+  */
 export function contentToString(content: Content): string {
   return collectContent(content).join("\n")
 }
 
-export function collectContent(content: Content, indent: string = '', acc: string[] = []): string[] {
+/**
+  * Takes a Content object and turns it into an array of lines
+  */
+function collectContent(content: Content, indent: string = '', acc: string[] = []): string[] {
   for (const [key, value] of content) {
     let line = indent
 
@@ -21,7 +26,7 @@ export function collectContent(content: Content, indent: string = '', acc: strin
       line += '[!]'
     }
 
-    line += key.line
+    line += key.link ? `[${key.line}](${key.link})` : key.line
 
     acc.push(line)
 
@@ -30,6 +35,11 @@ export function collectContent(content: Content, indent: string = '', acc: strin
   return acc
 }
 
+const LINE_REGEX = /\[(.*)\]\((.*)\)/
+
+/**
+  * Takes a string and turns it into a Content object
+  */
 export function parseContent(value: string): Content {
   const content: Content = []
 
@@ -62,7 +72,14 @@ export function parseContent(value: string): Content {
       line = line.substring(3)
     }
 
-    value.line = line
+    // 3- check for link format
+    const result = LINE_REGEX.exec(line)
+    if (!!result) {
+      value.line = result.at(1)
+      value.link = result.at(2)
+    } else {
+      value.line = line
+    }
 
     if (line.length)
       at.push([value, []])
