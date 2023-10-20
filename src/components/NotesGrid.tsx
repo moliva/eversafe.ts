@@ -1,4 +1,4 @@
-import { JSX, children, createEffect, createSignal, onCleanup, onMount } from "solid-js"
+import { JSX, children as solidChildren, createEffect, createSignal, onCleanup, onMount } from "solid-js"
 
 import styles from '../App.module.css'
 
@@ -7,7 +7,7 @@ export type NotesGridProps = {
 }
 
 export const NotesGrid = (props: NotesGridProps) => {
-  const l = children(() => props.children)
+  const notesComponents = solidChildren(() => props.children)
   const [notesRef, setNotesRef] = createSignal<HTMLElement | undefined>()
   const [columnLength, setColumnLength] = createSignal<number | undefined>()
   const [noteMap, setNoteMap] = createSignal<Map<number, HTMLElement[]> | undefined>()
@@ -57,22 +57,21 @@ export const NotesGrid = (props: NotesGridProps) => {
 
   function resize() {
     const notes = notesRef()
-    if (notes) {
-      const c = l()! as HTMLElement[]
 
-      let newMap1: Map<number, HTMLElement[]>
-      if (noteMap() && c[0].getBoundingClientRect().height === 0 && equalNotesLength(c)) {
-        const newMap = new Map()
+    if (notes) {
+      const notesArray = notesComponents()! as HTMLElement[]
+
+      const newMap = new Map<number, HTMLElement[]>()
+      if (noteMap() && notesArray[0].getBoundingClientRect().height === 0 && equalNotesLength(notesArray)) {
         for (const key of noteMap()!.keys()) {
           newMap.set(key, [])
         }
-        for (const child of c) {
+
+        for (const child of notesArray) {
           const column = Array.from(noteMap()!.entries()).find(([, v]) => v.find((n) => n.id === child.id))!
-          newMap.get(column[0]).push(child)
+          newMap.get(column[0])!.push(child)
         }
-        newMap1 = newMap
       } else {
-        const newMap = new Map<number, HTMLElement[]>()
         for (const column of [...Array(columnLength()).keys()]) {
           newMap.set(column, [])
         }
@@ -84,41 +83,41 @@ export const NotesGrid = (props: NotesGridProps) => {
           return entries.reduce((previous, current) => columnHeight(current[0]) < columnHeight(previous[0]) ? current : previous, entries.shift()!)
         }
 
-        for (const child of c) {
+        for (const child of notesArray) {
           const column = minColumnHeight()
           column[1].push(child)
         }
 
         setNoteMap(newMap)
-        newMap1 = newMap
       }
 
       for (let i = 0; i < notes.children.length; ++i) {
         const column = notes.children.item(i)!
-        const newColumn = newMap1.get(i)!
+        const newColumn = newMap.get(i)!
         for (let j = 0; j < column.children.length; ++j) {
           const item = column.children.item(j)! as HTMLElement
-          // if (!newColumn.includes(item)) {
-          column.removeChild(item)
-          // }
+          if (!newColumn.find(i => i.id === item.id && i.innerHTML === item.innerHTML)) {
+            column.removeChild(item)
+          }
         }
         const childrenCollection = Array.from(column.children)
         for (const item of newColumn) {
-          // if (!childrenCollection.includes(item as HTMLElement))
-          column.appendChild(item)
+          if (!childrenCollection.find(i => i.id === item.id && i.innerHTML === item.innerHTML)) {
+            column.appendChild(item)
+          }
         }
       }
     }
   }
 
   createEffect(() => {
-    const c = l()! as HTMLElement[]
+    const notesArray = notesComponents()! as HTMLElement[]
 
-    for (const child of c) {
+    for (const child of notesArray) {
       observer.observe(child)
     }
 
-    if (!equalNotesLength(c)) {
+    if (!equalNotesLength(notesArray)) {
       resize()
     }
   })
