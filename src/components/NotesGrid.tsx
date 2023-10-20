@@ -14,9 +14,10 @@ export const NotesGrid = (props: NotesGridProps) => {
 
   const observer = new ResizeObserver(resize)
 
-  const handler = () => {
-    if (notesRef()) {
-      const width = notesRef()!.getBoundingClientRect().width
+  const initializeNoteColumns = () => {
+    const ref = notesRef()
+    if (ref) {
+      const width = ref.getBoundingClientRect().width
       const colLen = Math.floor(width / 425) // each note - 420 width gap - 5
 
       if (columnLength() === colLen) {
@@ -26,28 +27,30 @@ export const NotesGrid = (props: NotesGridProps) => {
 
       setColumnLength(colLen)
 
-      for (let i = 0; i < notesRef()!.children.length; ++i) {
-        const column = notesRef()!.children.item(i)!
+      // remove all existing columns
+      for (let i = 0; i < ref.children.length; ++i) {
+        const column = ref.children.item(i)!
         column.remove()
       }
 
+      // create new columns
       for (let i = 0; i < colLen; ++i) {
         const column = document.createElement("div")
         column.className = styles['notes-column']
 
-        notesRef()?.appendChild(column)
+        ref.appendChild(column)
       }
     }
   }
 
-  createEffect(handler)
+  createEffect(initializeNoteColumns)
 
   onMount(() => {
-    window.addEventListener('resize', handler)
+    window.addEventListener('resize', initializeNoteColumns)
   });
 
   onCleanup(() => {
-    window.removeEventListener('resize', handler)
+    window.removeEventListener('resize', initializeNoteColumns)
   })
 
   const equalNotesLength = (c: HTMLElement[]): boolean => !!noteMap() && c.length === Array.from(noteMap()!.values()).reduce((a, i) => i.length + a, 0)
