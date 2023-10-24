@@ -157,7 +157,7 @@ export const App: Component = () => {
 
   function isColumn(column: number) {
     return function(v: Note, i: number, array: any) {
-      if (!columns()) {
+      if (!columns() || columns()!.size <= column) {
         return true
       }
       return columns()!.get(column)!.includes(v)
