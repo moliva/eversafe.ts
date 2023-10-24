@@ -9,6 +9,7 @@ import { Filter } from './components/FilterComponent'
 import { Nav } from './components/NavComponent'
 
 import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services'
+import { noteSize } from './utils'
 
 import styles from './App.module.css'
 
@@ -90,43 +91,77 @@ export const App: Component = () => {
       })
   }
 
-  const filteredNotes = () => notes()!.filter((note) => {
+  const filteredNotes = () => notes()?.filter((note) => {
     const lowered = filter().toLowerCase()
 
     return note.name.toLowerCase().includes(lowered) || note.tags.some((tag) => tag.includes(lowered))
   })
 
   const [notesRef, setNotesRef] = createSignal<HTMLElement | undefined>()
-  const [columns, setColumns] = createSignal<number | undefined>()
+  const [columnLength, setColumnLength] = createSignal<number | undefined>()
+  const [columns, setColumns] = createSignal<Map<number, Note[]> | undefined>()
 
-  const handler = () => {
-    if (notesRef()) {
-      const width = notesRef()!.getBoundingClientRect().width
-      console.log('width', width)
-      const columns = Math.floor(width / 425)
+  const computeColumns = () => {
+    const nRef = notesRef()
+    if (nRef) {
+      const width = nRef.getBoundingClientRect().width
+      const columns = Math.floor(width / 425) // each note 420 width + gap 5
 
-      console.log('columns', columns)
-      setColumns(columns)
+      setColumnLength(columns)
     }
 
-    // each note - 420 width
-    // gap - 5
   }
 
-  createEffect(() => {
-    handler()
-  })
+  const assignColumns = () => {
+    const notes = filteredNotes()
+    const colLen = columnLength()
+
+    if (!notes || !colLen)
+      // only assign columns when notes and column length are already set
+      return
+
+    const columnSize: number[] = []
+    const columns = new Map()
+    for (let col = 0; col < colLen; ++col) {
+      columnSize.push(0)
+      columns.set(col, [])
+    }
+
+
+    const minColumnHeight = () => {
+      return columnSize.reduce((previous, current, index) => current < previous[1] ? [index, current] : previous, [Infinity, Infinity])[0]
+    }
+
+    for (const note of notes) {
+      const column = minColumnHeight()
+      const size = noteSize(note)
+      columnSize[column] += size
+      columns.get(column)!.push(note)
+
+
+    }
+    setColumns(columns)
+
+  }
+
+  createEffect(computeColumns)
+  createEffect(assignColumns)
 
   onMount(() => {
-    window.addEventListener('resize', handler)
+    window.addEventListener('resize', computeColumns)
   });
 
   onCleanup(() => {
-    window.removeEventListener('resize', handler)
+    window.removeEventListener('resize', computeColumns)
   })
 
   function isColumn(column: number) {
-    return function(v: any, i: number, array: any) { return i % columns()! === column }
+    return function(v: Note, i: number, array: any) {
+      if (!columns()) {
+        return true
+      }
+      return columns()!.get(column)!.includes(v)
+    }
   }
 
   return (
@@ -147,13 +182,13 @@ export const App: Component = () => {
               <Match when={typeof notes() === 'object'}>
                 <Filter value={filter} onChange={setFilter} />
                 <div ref={setNotesRef} class={styles['note-content']}>
-                  <For each={[...Array(columns()).keys()]}>{
+                  <For each={[...Array(columnLength()).keys()]}>{
                     (column) => <div class={styles['notes-column']}>
-                                            <For each={filteredNotes().filter(isColumn(column))}>{
-                                              (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} onModified={onModifiedNote} onTagClicked={setFilter} />
-                                            }</For>
-                                          </div>
-                                        }</For>
+                      <For each={notes() ? filteredNotes()!.filter(isColumn(column)) : []}>{
+                        (note) => <NoteComponent note={note} onEdit={showModal} onDelete={onDeleteNote} onModified={onModifiedNote} onTagClicked={setFilter} />
+                      }</For>
+                    </div>
+                  }</For>
                 </div>
                 <button style={{ "margin-bottom": "10px" }} class={styles.primary} onClick={() => showModal(undefined)}>New</button>
               </Match>

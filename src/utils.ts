@@ -1,7 +1,24 @@
-import { Content, LineFormat } from "./types"
+import { Content, LineFormat, Note } from "./types"
 
 export function copyToClipboard(value: string): void {
   navigator.clipboard.writeText(value)
+}
+
+export function noteSize(note: Note): number {
+  return contentToLineNumber(note.content)
+}
+
+/**
+  * Takes a Content object and turns it into number corresponding to the number of lines
+  */
+export function contentToLineNumber(content: Content, acc: number = 0): number {
+  for (const [, value] of content) {
+    const internalContent = contentToLineNumber(value)
+    const current = 1
+
+    acc += current + internalContent
+  }
+  return acc
 }
 
 /**
