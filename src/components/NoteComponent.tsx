@@ -2,7 +2,7 @@ import { For, createSignal } from 'solid-js'
 import { deepCopy } from "deep-copy-ts"
 
 import { Note } from '../types'
-import { contentToString, copyToClipboard } from '../utils'
+import { contentToString, copyToClipboard, noteSize } from '../utils'
 
 import { ContentComponent } from './ContentComponent'
 
@@ -21,6 +21,7 @@ export const NoteComponent = (props: NoteProps) => {
   const { note } = props
 
   const [collapsed, setCollapsed] = createSignal(false)
+  const [showingMore, setShowingMore] = createSignal(false)
 
   const toggleNote = () => {
     setCollapsed(!collapsed())
@@ -41,6 +42,8 @@ export const NoteComponent = (props: NoteProps) => {
     props.onModified(copy)
   }
 
+  const isLarge = noteSize(note) > 18
+
   return <div class={styles.note} style={{ "background-color": note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
@@ -58,6 +61,12 @@ export const NoteComponent = (props: NoteProps) => {
         (tag) => <label class={`${styles['note-tag']} ${styles['button']}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
       }</For>
     </div>
-    {collapsed() ? null : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />}
+    {collapsed() ? null : <>
+      {isLarge && !showingMore()
+        ? <div class={styles['note-constrain']} style={{ '--note-color': note.color }}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
+        : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
+      }
+      {isLarge ? <span class={`${styles['note-expand-control']} ${styles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
+    </>}
   </div>
 }

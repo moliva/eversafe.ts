@@ -302,6 +302,32 @@ button {
   cursor: pointer;
 }
 
+.note-expand-control {
+  display: block;
+  width: 100%;
+  position: relative;
+
+  text-align: center;
+  font-size: 14px;
+}
+
+.note-constrain:before {
+  content:'';
+  width:100%;
+  height:100%;
+  position: absolute;
+  left:0;
+  top:0;
+
+  background:linear-gradient(transparent 420px, var(--note-color));
+}
+
+.note-constrain {
+  max-height: 480px;
+  overflow: hidden;
+  position: relative;
+}
+
 /* ***************************************************************************************************** */
 /* *************** Tags *************** */
 /* ***************************************************************************************************** */

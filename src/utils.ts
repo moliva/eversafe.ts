@@ -4,8 +4,12 @@ export function copyToClipboard(value: string): void {
   navigator.clipboard.writeText(value)
 }
 
+const TITLE_SIZE = 1.5
+const TAGS_SIZE = 0.5
+
 export function noteSize(note: Note): number {
-  return contentToLineNumber(note.content)
+  const tagsSize = note.tags.length > 0 ? TAGS_SIZE : 0
+  return TITLE_SIZE + contentToLineNumber(note.content) + tagsSize
 }
 
 /**
