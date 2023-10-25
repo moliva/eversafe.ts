@@ -7,6 +7,19 @@ export function copyToClipboard(value: string): void {
 const TITLE_SIZE = 1.5
 const TAGS_SIZE = 0.5
 
+export const WRAPPING_SIZE = 18
+
+
+/**
+  * Takes a Note object and turns it into number corresponding to the number of lines plus its header size
+  */
+export function wrappedNoteSize(note: Note): number {
+  return Math.min(noteSize(note), WRAPPING_SIZE)
+}
+
+/**
+  * Takes a Note object and turns it into number corresponding to the number of lines plus its header size
+  */
 export function noteSize(note: Note): number {
   const tagsSize = note.tags.length > 0 ? TAGS_SIZE : 0
   return TITLE_SIZE + contentToLineNumber(note.content) + tagsSize

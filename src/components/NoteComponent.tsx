@@ -2,7 +2,7 @@ import { For, createSignal } from 'solid-js'
 import { deepCopy } from "deep-copy-ts"
 
 import { Note } from '../types'
-import { contentToString, copyToClipboard, noteSize } from '../utils'
+import { WRAPPING_SIZE, contentToString, copyToClipboard, noteSize } from '../utils'
 
 import { ContentComponent } from './ContentComponent'
 
@@ -23,7 +23,7 @@ export const NoteComponent = (props: NoteProps) => {
   const [collapsed, setCollapsed] = createSignal(false)
   const [showingMore, setShowingMore] = createSignal(false)
 
-  const toggleNote = () => {
+  const toggleCollapsed = () => {
     setCollapsed(!collapsed())
   }
 
@@ -42,12 +42,12 @@ export const NoteComponent = (props: NoteProps) => {
     props.onModified(copy)
   }
 
-  const isLarge = noteSize(note) > 18
+  const isLarge = noteSize(note) > WRAPPING_SIZE
 
-  return <div class={styles.note} style={{ "background-color": note.color }}>
+  return <div class={styles.note} style={{ '--note-color': note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
-        <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} style={{ 'margin-right': '5px' }} onClick={toggleNote} />
+        <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} style={{ 'margin-right': '5px' }} onClick={toggleCollapsed} />
         <strong class={styles['note-name']}>{note.name}</strong>
       </div>
       <div class={styles['note-controls']}>
@@ -58,12 +58,12 @@ export const NoteComponent = (props: NoteProps) => {
     </div>
     <div class={styles['note-tags']}>
       <For each={note.tags}>{
-        (tag) => <label class={`${styles['note-tag']} ${styles['button']}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
+        (tag) => <label class={`${styles['note-tag']} ${styles.button}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
       }</For>
     </div>
     {collapsed() ? null : <>
       {isLarge && !showingMore()
-        ? <div class={styles['note-constrain']} style={{ '--note-color': note.color }}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
+        ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
         : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
       }
       {isLarge ? <span class={`${styles['note-expand-control']} ${styles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}

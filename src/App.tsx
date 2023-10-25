@@ -9,7 +9,7 @@ import { Filter } from './components/FilterComponent'
 import { Nav } from './components/NavComponent'
 
 import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services'
-import { noteSize } from './utils'
+import { wrappedNoteSize } from './utils'
 
 import styles from './App.module.css'
 
@@ -127,14 +127,13 @@ export const App: Component = () => {
       columns.set(col, [])
     }
 
-
     const minColumnHeight = () => {
       return columnSize.reduce((previous, current, index) => current < previous[1] ? [index, current] : previous, [Infinity, Infinity])[0]
     }
 
     for (const note of notes) {
       const column = minColumnHeight()
-      const size = noteSize(note)
+      const size = wrappedNoteSize(note)
       columnSize[column] += size
       columns.get(column)!.push(note)
 
@@ -194,9 +193,9 @@ export const App: Component = () => {
               </Match>
             </Switch>
           </div>
-        </section >
-      </main >
-    </div >
+        </section>
+      </main>
+    </div>
   )
 }
 
