@@ -6,7 +6,7 @@ import { WRAPPING_SIZE, contentToString, copyToClipboard, noteSize } from '../ut
 
 import { ContentComponent } from './ContentComponent'
 import Fa from 'solid-fa'
-import { faPenToSquare, faXmark, faClipboard } from '@fortawesome/free-solid-svg-icons'
+import { faPenToSquare, faXmark, faClipboard, faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 
 import styles from '../App.module.css'
@@ -50,13 +50,13 @@ export const NoteComponent = (props: NoteProps) => {
   return <div class={styles.note} style={{ '--note-color': note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
-        <i class={`${styles.button} ${styles.arrow} ${collapsed() ? styles.right : styles.down}`} style={{ 'margin-right': '5px' }} onClick={toggleCollapsed} />
+        <a style={{ "min-width": '16px', 'text-align': 'center' }} onClick={toggleCollapsed}><Fa icon={collapsed() ? faChevronRight : faChevronDown} class={`${styles.button} ${styles.arrow}`} /></a>
         <strong class={styles['note-name']}>{note.name}</strong>
       </div>
       <div class={styles['note-controls']}>
-        <a class={styles.button} onClick={() => props.onEdit(note)}><Fa icon={faPenToSquare} /></a>
-        <a class={styles.button} onClick={() => props.onDelete(note)}><Fa icon={faXmark} /></a>
-        <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content))}><Fa icon={faClipboard} /></a>
+        <a class={`${styles['edit-control']} ${styles['note-control']}`} onClick={() => props.onEdit(note)}><Fa icon={faPenToSquare} /></a>
+        <a class={`${styles['copy-control']} ${styles['note-control']}`} onClick={() => copyToClipboard(contentToString(note.content))}><Fa icon={faClipboard} /></a>
+        <a class={`${styles['delete-control']} ${styles['note-control']}`} onClick={() => props.onDelete(note)}><Fa icon={faXmark} /></a>
       </div>
     </div>
     <div class={styles['note-tags']}>
