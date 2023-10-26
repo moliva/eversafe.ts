@@ -5,6 +5,9 @@ import { Note } from '../types'
 import { WRAPPING_SIZE, contentToString, copyToClipboard, noteSize } from '../utils'
 
 import { ContentComponent } from './ContentComponent'
+import Fa from 'solid-fa'
+import { faPenToSquare, faXmark, faClipboard } from '@fortawesome/free-solid-svg-icons'
+
 
 import styles from '../App.module.css'
 
@@ -51,9 +54,9 @@ export const NoteComponent = (props: NoteProps) => {
         <strong class={styles['note-name']}>{note.name}</strong>
       </div>
       <div class={styles['note-controls']}>
-        <a class={styles.button} onClick={() => props.onEdit(note)}>✏️</a>
-        <a class={styles.button} onClick={() => props.onDelete(note)}>❌</a>
-        <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content))}>📋</a>
+        <a class={styles.button} onClick={() => props.onEdit(note)}><Fa icon={faPenToSquare} /></a>
+        <a class={styles.button} onClick={() => props.onDelete(note)}><Fa icon={faXmark} /></a>
+        <a class={styles.button} onClick={() => copyToClipboard(contentToString(note.content))}><Fa icon={faClipboard} /></a>
       </div>
     </div>
     <div class={styles['note-tags']}>
@@ -61,12 +64,14 @@ export const NoteComponent = (props: NoteProps) => {
         (tag) => <label class={`${styles['note-tag']} ${styles.button}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
       }</For>
     </div>
-    {collapsed() ? null : <>
-      {isLarge && !showingMore()
-        ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
-        : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
-      }
-      {isLarge ? <span class={`${styles['note-expand-control']} ${styles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
-    </>}
-  </div>
+    {
+      collapsed() ? null : <>
+        {isLarge && !showingMore()
+          ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
+          : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
+        }
+        {isLarge ? <span class={`${styles['note-expand-control']} ${styles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
+      </>
+    }
+  </div >
 }

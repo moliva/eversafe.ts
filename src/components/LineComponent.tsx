@@ -4,6 +4,8 @@ import { LineFormat } from "../types"
 import { copyToClipboard } from '../utils'
 
 import styles from '../App.module.css'
+import Fa from "solid-fa"
+import { faClipboard, faEye } from "@fortawesome/free-solid-svg-icons"
 
 export type LineProps = {
   key: LineFormat
@@ -25,8 +27,9 @@ export const LineComponent = (props: LineProps) => {
     {key.checkbox ? <input type="checkbox" checked={!!key.check} onClick={onCheckToggle} /> : null}
     {keyLine}
     {showMenu() ? <>
-      {key.blur ? <a class={styles['content-show-blur']} onClick={() => { setBlur(!blur()) }}>&#128065</a> : null}
-      <a class={styles['content-show-blur']} onClick={() => { copyToClipboard(key.line!) }}>&#x1f4cb</a>
-    </> : null}
-  </div>
+      {key.blur ? <a class={styles['content-show-blur']} onClick={() => { setBlur(!blur()) }}><Fa icon={faEye} /></a> : null}
+      <a class={styles['content-show-blur']} onClick={() => { copyToClipboard(key.line!) }}><Fa icon={faClipboard} /></a>
+    </> : null
+    }
+  </div >
 }
