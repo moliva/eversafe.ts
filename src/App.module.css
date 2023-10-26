@@ -207,6 +207,10 @@ body {
 /* *************** Elementwise *************** */
 /* ***************************************************************************************************** */
 
+p {
+  margin: 0;
+}
+
 input {
   background-color: #282c34;
   border: 0;
@@ -295,7 +299,12 @@ button {
 .content-key {
   display : flex;
   align-items : center;
-  height : 30px;
+  min-height : 30px;
+}
+
+.content-controls {
+  margin-left: 3px;
+  flex-shrink: 0;
 }
 
 .content-control {

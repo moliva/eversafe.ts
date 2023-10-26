@@ -26,7 +26,7 @@ export const LineComponent = (props: LineProps) => {
   return <div class={styles['content-key']} onMouseEnter={() => setShowMenu(true)} onMouseLeave={() => setShowMenu(false)}>
     {key.checkbox ? <input type="checkbox" checked={!!key.check} onClick={onCheckToggle} /> : null}
     {keyLine}
-    {showMenu() ? <div style={{ "margin-left": "3px" }}>
+    {showMenu() ? <div class={styles['content-controls']}>
       {key.blur ? <a class={`${styles['content-control']} ${styles['blur-control']}`} onClick={() => { setBlur(!blur()) }}><Fa icon={faEye} /></a> : null}
       <a class={`${styles['content-control']} ${styles['copy-control']}`} onClick={() => { copyToClipboard(key.line!) }}><Fa icon={faClipboard} /></a>
     </div> : null
