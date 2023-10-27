@@ -1,6 +1,8 @@
 
 .nav {
   position: relative;
+  width: 80%;
+  text-align:center;
 }
 
 .tiny {
@@ -8,13 +10,14 @@
 }
 
 .profile-card {
+  width: 100%;
   display: flex;
+  gap: 10px;
 
-  margin-bottom: 0.5rem;
   align-items: center;
+  justify-content: center;
 }
 
 .profile-picture {
-  margin-left: 1rem;
   border-radius: 15%;
 }

@@ -166,7 +166,7 @@ export const App: Component = () => {
   return (
     <div class={styles.App}>
       <header class={styles.header}>
-        <Nav identity={identity()} />
+        <Nav identity={identity()} filter={filter} onFilterChange={setFilter} onNewNoteClicked={() => showModal(undefined)} />
       </header>
       <main class={styles.main}>
         <Show when={showNoteModal()}>
@@ -179,7 +179,6 @@ export const App: Component = () => {
                 <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}><h1>Login</h1></a>
               </Match>
               <Match when={typeof notes() === 'object'}>
-                <Filter value={filter} onChange={setFilter} />
                 <div ref={setNotesRef} class={styles['note-content']}>
                   <For each={[...Array(columnLength()).keys()]}>{
                     (column) => <div class={styles['notes-column']}>
@@ -189,7 +188,6 @@ export const App: Component = () => {
                     </div>
                   }</For>
                 </div>
-                <button style={{ "margin-bottom": "10px" }} class={styles.primary} onClick={() => showModal(undefined)}>New</button>
               </Match>
             </Switch>
           </div>
