@@ -2,15 +2,15 @@ import { createSignal, type Component, onMount, Switch, Match, Show, createEffec
 import { useNavigate, useSearchParams } from "@solidjs/router"
 
 import { IdentityState, Note } from './types'
+import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services'
 
 import { EditNote } from './components/EditNoteComponent'
 import { Nav } from './components/NavComponent'
+import { NotesBoard } from './components/NotesBoard'
 
-import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services'
 
 import styles from './App.module.css'
 import navStyles from './components/NavComponent.module.css'
-import { NotesBoard } from './components/NotesBoard'
 
 export const App: Component = () => {
   const [identity, setIdentity] = createSignal<IdentityState>(undefined)
@@ -45,8 +45,8 @@ export const App: Component = () => {
 
   // handle auth
   const [searchParams] = useSearchParams()
-
   const token = searchParams.login_success
+
   if (!identity() && typeof token === "string") {
     const idToken = token.split(".")[1]
     const decoded = atob(idToken)

@@ -19,30 +19,34 @@ export type NotesBoardProps = {
 export function NotesBoard(props: NotesBoardProps) {
   const { notes, onDelete, onEdit, onModified, onTagClicked } = props
 
-  const [notesBoardRef, setNotesBoardRef] = createSignal<HTMLElement | undefined>()
+  const [boardRef, setBoardRef] = createSignal<HTMLElement | undefined>()
   const [columnLength, setColumnLength] = createSignal<number | undefined>()
   const [columns, setColumns] = createSignal<Map<number, Note[]> | undefined>()
 
   const computeColumns = () => {
-    const nRef = notesBoardRef()
-    if (nRef) {
-      const width = nRef.getBoundingClientRect().width
-      const columns = Math.floor(width / 425) // each note 420 width + gap 5
+    const ref = boardRef()
 
-      setColumnLength(columns)
-    }
+    if (!ref)
+      // only compute columns when ref is captured
+      return
 
+    const width = ref.getBoundingClientRect().width
+    const columns = Math.floor(width / 425) // each note = (400 content + 20 horizontal padding + 5 gap) width
+    // .note.width .note.padding .notes-board.gap
+
+    setColumnLength(columns)
   }
 
   const assignColumns = () => {
     const colLen = columnLength()
 
-    if (!notes || !colLen)
+    if (!colLen)
       // only assign columns when notes and column length are already set
       return
 
     const columnSize: number[] = []
     const columns = new Map()
+
     for (let col = 0; col < colLen; ++col) {
       columnSize.push(0)
       columns.set(col, [])
@@ -57,22 +61,20 @@ export function NotesBoard(props: NotesBoardProps) {
       const size = wrappedNoteSize(note)
       columnSize[column] += size
       columns.get(column)!.push(note)
-
-
     }
-    setColumns(columns)
 
+    setColumns(columns)
   }
 
-  createEffect(computeColumns)
-  createEffect(assignColumns)
-
-  function isColumn(column: number) {
-    return function(v: Note) {
-      if (!columns() || columns()!.size <= column) {
+  const isColumn = (column: number) => {
+    return (v: Note) => {
+      const cols = columns()
+      if (!cols || cols.size <= column) {
+        // columns need to be re assigned, allow notes to be shown
         return true
       }
-      return columns()!.get(column)!.includes(v)
+
+      return cols.get(column)!.includes(v)
     }
   }
 
@@ -84,7 +86,10 @@ export function NotesBoard(props: NotesBoardProps) {
     window.removeEventListener('resize', computeColumns)
   })
 
-  return <div ref={setNotesBoardRef} class={styles['notes-board']}>
+  createEffect(computeColumns)
+  createEffect(assignColumns)
+
+  return <div ref={setBoardRef} class={styles['notes-board']}>
     <For each={[...Array(columnLength()).keys()]}>{
       (column) => <div class={styles['notes-column']}>
         <For each={notes().filter(isColumn(column))}>{
