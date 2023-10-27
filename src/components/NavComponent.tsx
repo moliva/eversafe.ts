@@ -42,7 +42,7 @@ export const Nav = (props: NavProps) => {
             />
           </div>
         </>
-      ) : (<a href={`${API_HOST}/login`} class={`${appStyles.button} ${styles.tiny} ${appStyles.link} ${styles['login']}`}><Fa class={styles['nav-icon']} icon={faKey} /></a>)}
+      ) : (<a href={`${API_HOST}/login`} class={`${appStyles.button} ${styles.tiny} ${appStyles.link} ${styles.login}`}><Fa class={styles['nav-icon']} icon={faKey} /></a>)}
     </div>
   </nav>
 

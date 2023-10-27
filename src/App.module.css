@@ -1,7 +1,6 @@
 
 .App {
   width: 99%;
-
   margin: auto;
 }
 
@@ -42,29 +41,11 @@
 /* *************** Note *************** */
 /* ***************************************************************************************************** */
 
-.notes {
+.content {
   width: 100%;
 
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.note-content {
-  width: 100%;
-
-  display: flex;
-  gap: 5px;
   justify-content: center;
-
-  margin-bottom: 15px;
-}
-
-.notes-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
 }
 
 /* ***************************************************************************************************** */

@@ -30,22 +30,6 @@
   justify-content: center;
 }
 
-.profile-picture {
-  border-radius: 15%;
-}
-
-.new-note:hover {
-  color: lightgreen;
-}
-
-.login:hover {
-  color: DarkKhaki;
-}
-
-.logout:hover {
-  color: tan;
-}
-
 .nav-app-controls {
   width: 100%;
 
@@ -61,4 +45,20 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.new-note:hover {
+  color: lightgreen;
+}
+
+.login:hover {
+  color: DarkKhaki;
+}
+
+.logout:hover {
+  color: tan;
+}
+
+.profile-picture {
+  border-radius: 15%;
 }
