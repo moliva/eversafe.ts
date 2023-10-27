@@ -50,13 +50,13 @@ export const NoteComponent = (props: NoteProps) => {
   return <div class={styles.note} style={{ '--note-color': note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
-        <a style={{ "min-width": '16px', 'text-align': 'center' }} onClick={toggleCollapsed}><Fa icon={collapsed() ? faChevronRight : faChevronDown} class={`${appStyles.button} ${styles.arrow}`} /></a>
+        <button style={{ "min-width": '16px', 'text-align': 'center' }} onClick={toggleCollapsed}><Fa icon={collapsed() ? faChevronRight : faChevronDown} class={`${appStyles.button} ${styles.arrow}`} /></button>
         <strong class={styles['note-name']}>{note.name}</strong>
       </div>
       <div class={styles['note-controls']}>
-        <a class={`${styles['edit-control']} ${styles['note-control']}`} onClick={() => props.onEdit(note)}><Fa icon={faPenToSquare} /></a>
-        <a class={`${styles['copy-control']} ${styles['note-control']}`} onClick={() => copyToClipboard(contentToString(note.content))}><Fa icon={faClipboard} /></a>
-        <a class={`${styles['delete-control']} ${styles['note-control']}`} onClick={() => props.onDelete(note)}><Fa icon={faXmark} /></a>
+        <button class={`${styles['edit-control']} ${styles['note-control']}`} onClick={() => props.onEdit(note)}><Fa icon={faPenToSquare} /></button>
+        <button class={`${styles['copy-control']} ${styles['note-control']}`} onClick={() => copyToClipboard(contentToString(note.content))}><Fa icon={faClipboard} /></button>
+        <button class={`${styles['delete-control']} ${styles['note-control']}`} onClick={() => props.onDelete(note)}><Fa icon={faXmark} /></button>
       </div>
     </div>
     <div class={styles['note-tags']}>
@@ -64,14 +64,12 @@ export const NoteComponent = (props: NoteProps) => {
         (tag) => <label class={`${styles['note-tag']} ${appStyles.button}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
       }</For>
     </div>
-    {
-      collapsed() ? null : <>
-        {isLarge && !showingMore()
-          ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
-          : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
-        }
-        {isLarge ? <span class={`${styles['note-expand-control']} ${appStyles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
-      </>
-    }
+    {collapsed() ? null : <>
+      {isLarge && !showingMore()
+        ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
+        : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
+      }
+      {isLarge ? <span class={`${styles['note-expand-control']} ${appStyles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
+    </>}
   </div >
 }

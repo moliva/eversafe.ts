@@ -31,8 +31,8 @@ export const LineComponent = (props: LineProps) => {
     {key.checkbox ? <input type="checkbox" checked={!!key.check} onClick={onCheckToggle} /> : null}
     {keyLine}
     {showMenu() ? <div class={styles['content-controls']}>
-      {key.blur ? <a class={`${styles['content-control']} ${styles['blur-control']}`} onClick={() => { setBlur(!blur()) }}><Fa icon={faEye} /></a> : null}
-      <a class={`${styles['content-control']} ${noteStyles['copy-control']}`} onClick={() => { copyToClipboard(key.line!) }}><Fa icon={faClipboard} /></a>
+      {key.blur ? <button class={`${styles['content-control']} ${styles['blur-control']}`} onClick={() => { setBlur(!blur()) }}><Fa icon={faEye} /></button> : null}
+      <button class={`${styles['content-control']} ${noteStyles['copy-control']}`} onClick={() => { copyToClipboard(key.line!) }}><Fa icon={faClipboard} /></button>
     </div> : null
     }
   </div >
