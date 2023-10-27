@@ -1,4 +1,4 @@
-import { Accessor } from 'solid-js'
+import { Accessor, createSignal, onCleanup, onMount } from 'solid-js'
 
 import { faEraser, faRemove } from '@fortawesome/free-solid-svg-icons'
 import Fa from 'solid-fa'
@@ -15,8 +15,22 @@ export type FilterProps = {
 export const Filter = (props: FilterProps) => {
   const { value, onChange } = props
 
+  const [inputRef, setInputRef] = createSignal<HTMLElement | undefined>()
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
+      const ref = inputRef()
+
+      if (ref) {
+        ref.focus()
+      }
+    }
+  }
+
+  onMount(() => window.addEventListener('keydown', handleKeydown, true))
+  onCleanup(() => window.removeEventListener('keydown', handleKeydown))
   return <div class={styles.filter}>
-    <input class={styles['filter-input']} value={value()} placeholder="Filter..." onChange={(ev) => onChange(ev.target.value)} />
+    <input ref={setInputRef} class={styles['filter-input']} value={value()} placeholder="Filter..." onChange={(ev) => onChange(ev.target.value)} />
     <button class={`${appStyles.button} ${styles['filter-button']} ${noteStyles['delete-control']}`} onClick={() => onChange("")}><Fa icon={faEraser} /></button>
   </div>
 }

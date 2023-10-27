@@ -1,4 +1,4 @@
-import { createSignal, type Component, onMount, Switch, Match, Show, createEffect, } from 'solid-js'
+import { createSignal, type Component, onMount, Switch, Match, Show, createEffect, onCleanup, } from 'solid-js'
 import { useNavigate, useSearchParams } from "@solidjs/router"
 
 import { IdentityState, Note } from './types'
@@ -16,12 +16,12 @@ export const App: Component = () => {
   const [identity, setIdentity] = createSignal<IdentityState>(undefined)
 
   const [notes, setNotes] = createSignal<Note[] | undefined>(undefined)
+  const [filter, setFilter] = createSignal("")
   const [filteredNotes, setFilteredNotes] = createSignal<Note[]>([])
 
   const [showNoteModal, setShowNoteModal] = createSignal(false)
   const [currentNote, setCurrentNote] = createSignal<Note | undefined>(undefined)
 
-  const [filter, setFilter] = createSignal("")
 
   const navigate = useNavigate()
 
@@ -32,15 +32,29 @@ export const App: Component = () => {
     setNotes(notes)
   }
 
+  const handleAppKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      if (showNoteModal()) {
+        // if edit modal is currently on, discard it
+        setShowNoteModal(false)
+      } else if (filter().length > 0) {
+        // if filter is set, unset it
+        setFilter("")
+      }
+      return false
+    }
+
+
+  }
+
   onMount(async () => {
     await refreshNotes()
 
-    window.addEventListener('keyup', function(e) {
-      if (e.key == 'Escape' || e.key == 'Esc') {
-        setShowNoteModal(false)
-        return false
-      }
-    }, true)
+    window.addEventListener('keydown', handleAppKeydown, true)
+  })
+
+  onCleanup(() => {
+    window.removeEventListener('keydown', handleAppKeydown)
   })
 
   // handle auth
@@ -110,7 +124,9 @@ export const App: Component = () => {
         <section class={styles.content}>
           <Switch fallback={<p>Loading...</p>}>
             <Match when={typeof identity() === 'undefined'}>
-              <a href={`${API_HOST}/login`} class={`${styles.button} ${navStyles.tiny} ${styles.link} ${navStyles.login}`} style={{ "font-size": "30px", "font-weight": "bold" }}>Login</a>
+              <div style={{ "min-height": "100vh", "align-items": "center", display: "flex" }}>
+                <a href={`${API_HOST}/login`} class={`${styles.button} ${navStyles.tiny} ${styles.link} ${navStyles.login}`} style={{ "font-size": "30px", "font-weight": "bold" }}>Login</a>
+              </div>
             </Match>
             <Match when={typeof notes() === 'object'}>
               <NotesBoard notes={filteredNotes} onDelete={onDeleteNote} onEdit={showModal} onModified={onModifiedNote} onTagClicked={setFilter} />

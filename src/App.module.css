@@ -26,15 +26,15 @@
 
 .main {
   background-color: #282c34;
-  min-height: 100vh;
+  color: white;
 
+  min-height: 100vh;
   margin-top: 60px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  color: white;
+  justify-content: flext-start;
 }
 
 .content {
