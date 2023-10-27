@@ -26,19 +26,23 @@ export const Nav = (props: NavProps) => {
     <div class={styles['profile-card']}>
       {identity ? (
         <>
-          <Filter value={filter} onChange={onFilterChange} />
-          <a class={`${appStyles.button} ${appStyles.link}`} onClick={onNewNoteClicked} ><Fa icon={faPlusSquare} /></a>
-          <a class={`${appStyles.button} ${appStyles.link}`} href={`/`} ><Fa icon={faUnlockKeyhole} /></a>
-          <img
-            class={`${styles['profile-picture']} ${styles.tiny}`}
-            src={identity.identity.picture}
-            title={identity.identity.name}
-            crossOrigin="anonymous"
-            referrerPolicy="no-referrer"
-            alt="profile"
-          />
+          <div class={styles['nav-app-controls']}>
+            <Filter value={filter} onChange={onFilterChange} />
+            <a class={`${appStyles.button} ${appStyles.link} ${styles['new-note']}`} onClick={onNewNoteClicked} ><Fa class={styles['nav-icon']} icon={faPlusSquare} /></a>
+          </div>
+          <div class={styles['nav-auth-controls']}>
+            <a class={`${appStyles.button} ${appStyles.link} ${styles['logout']}`} href={`/`} ><Fa class={styles['nav-icon']} icon={faUnlockKeyhole} /></a>
+            <img
+              class={`${styles['profile-picture']} ${styles.tiny}`}
+              src={identity.identity.picture}
+              title={identity.identity.name}
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              alt="profile"
+            />
+          </div>
         </>
-      ) : (<a href={`${API_HOST}/login`} class={`${appStyles.button} ${styles.tiny} ${appStyles.link}`}><Fa icon={faKey} /></a>)}
+      ) : (<a href={`${API_HOST}/login`} class={`${appStyles.button} ${styles.tiny} ${appStyles.link}`}><Fa class={styles['nav-icon']} icon={faKey} /></a>)}
     </div>
   </nav>
 

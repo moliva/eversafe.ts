@@ -1,6 +1,6 @@
 
 .App {
-  width: 80%;
+  width: 99%;
 
   margin: auto;
 }
@@ -23,7 +23,6 @@
   z-index: 1;
 
   box-shadow: 0 0 1rem 1px rgb(40, 44, 52);
-
 }
 
 .main {
@@ -37,13 +36,6 @@
   align-items: center;
   justify-content: center;
   color: white;
-}
-
-/* TODO - fix this when screen is smaller - moliva - 2023/10/12 */
-@media only screen and (max-width: 800px) {
-  .main {
-    margin-top: 60px;
-  }
 }
 
 /* ***************************************************************************************************** */
@@ -73,13 +65,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
-}
-
-/* TODO - fix this when screen is smaller - moliva - 2023/10/12 */
-@media only screen and (max-width: 600px) {
-  .note-content {
-     justify-content:center;
-  }
 }
 
 /* ***************************************************************************************************** */

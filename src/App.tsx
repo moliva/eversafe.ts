@@ -12,6 +12,7 @@ import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services'
 import { wrappedNoteSize } from './utils'
 
 import styles from './App.module.css'
+import navStyles from './components/NavComponent.module.css'
 
 export const App: Component = () => {
   const [identity, setIdentity] = createSignal<IdentityState>(undefined)
@@ -176,7 +177,7 @@ export const App: Component = () => {
           <div class={styles.notes}>
             <Switch fallback={<p>Loading...</p>}>
               <Match when={typeof identity() === 'undefined'}>
-                <a href={`${API_HOST}/login`} class={`${styles.button} ${styles.tiny} ${styles.link}`}><h1>Login</h1></a>
+                <a href={`${API_HOST}/login`} class={`${styles.button} ${navStyles.tiny} ${styles.link}`}><h1>Login</h1></a>
               </Match>
               <Match when={typeof notes() === 'object'}>
                 <div ref={setNotesRef} class={styles['note-content']}>
