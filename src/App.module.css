@@ -53,8 +53,12 @@
   text-decoration: none;
 }
 
-.primary {
+.button.primary {
   background-color: #00ac00;
+}
+
+.button.secondary {
+  background-color: gray;
 }
 
 .button {

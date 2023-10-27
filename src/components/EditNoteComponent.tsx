@@ -35,8 +35,8 @@ export const EditNote = (props: EditNoteProps) => {
       <textarea ref={newNoteContent} placeholder="Stuff..." rows="10">{note ? contentToString(note?.content) : ''}</textarea>
       <div class={styles['modal-controls']}>
         <input ref={colorRef} type="color" value={note?.color ?? '#404040'} />
-        <button class={appStyles.primary} onClick={() => props.onConfirm(newNote())}>{note ? 'Edit' : 'Create'}</button>
-        <button onClick={props.onDiscard}>Discard</button>
+        <button class={`${appStyles.button} ${appStyles.primary}`} onClick={() => props.onConfirm(newNote())}>{note ? 'Edit' : 'Create'}</button>
+        <button class={`${appStyles.button} ${appStyles.secondary}`} onClick={props.onDiscard}>Discard</button>
       </div>
     </div>
   </div>
