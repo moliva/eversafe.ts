@@ -8,8 +8,8 @@ import { ContentComponent } from './ContentComponent'
 import Fa from 'solid-fa'
 import { faPenToSquare, faXmark, faClipboard, faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
-
-import styles from '../App.module.css'
+import styles from './NoteComponent.module.css'
+import appStyles from '../App.module.css'
 
 export type NoteProps = {
   note: Note
@@ -50,7 +50,7 @@ export const NoteComponent = (props: NoteProps) => {
   return <div class={styles.note} style={{ '--note-color': note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
-        <a style={{ "min-width": '16px', 'text-align': 'center' }} onClick={toggleCollapsed}><Fa icon={collapsed() ? faChevronRight : faChevronDown} class={`${styles.button} ${styles.arrow}`} /></a>
+        <a style={{ "min-width": '16px', 'text-align': 'center' }} onClick={toggleCollapsed}><Fa icon={collapsed() ? faChevronRight : faChevronDown} class={`${appStyles.button} ${styles.arrow}`} /></a>
         <strong class={styles['note-name']}>{note.name}</strong>
       </div>
       <div class={styles['note-controls']}>
@@ -61,7 +61,7 @@ export const NoteComponent = (props: NoteProps) => {
     </div>
     <div class={styles['note-tags']}>
       <For each={note.tags}>{
-        (tag) => <label class={`${styles['note-tag']} ${styles.button}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
+        (tag) => <label class={`${styles['note-tag']} ${appStyles.button}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
       }</For>
     </div>
     {
@@ -70,7 +70,7 @@ export const NoteComponent = (props: NoteProps) => {
           ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
           : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
         }
-        {isLarge ? <span class={`${styles['note-expand-control']} ${styles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
+        {isLarge ? <span class={`${styles['note-expand-control']} ${appStyles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
       </>
     }
   </div >

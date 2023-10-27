@@ -2,7 +2,8 @@ import { Note } from "../types"
 
 import { contentToString, parseContent } from "../utils"
 
-import styles from '../App.module.css'
+import appStyles from '../App.module.css'
+import styles from './EditNoteComponent.module.css'
 
 export type EditNoteProps = {
   note: Note | undefined
@@ -29,12 +30,12 @@ export const EditNote = (props: EditNoteProps) => {
 
   return <div class={styles.modal}>
     <div class={styles["modal-content"]}>
-      <input ref={newNoteName} id="new-note-name" class={styles['modal-name']} placeholder="Note name" value={note?.name ?? ''}></input>
+      <input ref={newNoteName} class={styles['modal-name']} placeholder="Note name" value={note?.name ?? ''}></input>
       <input ref={tagsRef} class={styles['modal-tags']} placeholder="Comma separated tags" value={note?.tags.join(',') ?? ''}></input>
-      <textarea ref={newNoteContent} id="new-note-content" placeholder="Stuff..." rows="10">{note ? contentToString(note?.content) : ''}</textarea>
+      <textarea ref={newNoteContent} placeholder="Stuff..." rows="10">{note ? contentToString(note?.content) : ''}</textarea>
       <div class={styles['modal-controls']}>
         <input ref={colorRef} type="color" value={note?.color ?? '#404040'} />
-        <button class={styles.primary} onClick={() => props.onConfirm(newNote())}>{note ? 'Edit' : 'Create'}</button>
+        <button class={appStyles.primary} onClick={() => props.onConfirm(newNote())}>{note ? 'Edit' : 'Create'}</button>
         <button onClick={props.onDiscard}>Discard</button>
       </div>
     </div>

@@ -1,11 +1,15 @@
 import { createSignal } from "solid-js"
+
+import Fa from "solid-fa"
+import { faClipboard, faEye } from "@fortawesome/free-solid-svg-icons"
+
 import { LineFormat } from "../types"
 
 import { copyToClipboard } from '../utils'
 
-import styles from '../App.module.css'
-import Fa from "solid-fa"
-import { faClipboard, faEye } from "@fortawesome/free-solid-svg-icons"
+import appStyles from '../App.module.css'
+import noteStyles from './NoteComponent.module.css'
+import styles from './LineComponent.module.css'
 
 export type LineProps = {
   key: LineFormat
@@ -20,7 +24,7 @@ export const LineComponent = (props: LineProps) => {
   const [blur, setBlur] = createSignal(!!key.blur)
 
   const keyLine = key.link || key.line?.startsWith('http://') || key.line?.startsWith('https://')
-    ? <a classList={{ [styles.blur]: blur() }} href={key.link ?? key.line} target="_blank" class={styles.link}>{key.line}</a>
+    ? <a classList={{ [styles.blur]: blur() }} href={key.link ?? key.line} target="_blank" class={appStyles.link}>{key.line}</a>
     : <p classList={{ [styles.blur]: blur() }}>{key.line}</p>
 
   return <div class={styles['content-key']} onMouseEnter={() => setShowMenu(true)} onMouseLeave={() => setShowMenu(false)}>
@@ -28,7 +32,7 @@ export const LineComponent = (props: LineProps) => {
     {keyLine}
     {showMenu() ? <div class={styles['content-controls']}>
       {key.blur ? <a class={`${styles['content-control']} ${styles['blur-control']}`} onClick={() => { setBlur(!blur()) }}><Fa icon={faEye} /></a> : null}
-      <a class={`${styles['content-control']} ${styles['copy-control']}`} onClick={() => { copyToClipboard(key.line!) }}><Fa icon={faClipboard} /></a>
+      <a class={`${styles['content-control']} ${noteStyles['copy-control']}`} onClick={() => { copyToClipboard(key.line!) }}><Fa icon={faClipboard} /></a>
     </div> : null
     }
   </div >

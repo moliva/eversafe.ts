@@ -4,7 +4,7 @@ import { Content } from "../types"
 
 import { LineComponent } from './LineComponent'
 
-import styles from '../App.module.css'
+import styles from './ContentComponent.module.css'
 
 export type ContentProps = {
   initial?: boolean
