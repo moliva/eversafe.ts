@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 dockerfile='Dockerfile'
-image_name='eversafe:v17'
+image_name='eversafe:v18'
 
 echo "Building $image_name"
 docker build  -f "$dockerfile" -t "$image_name" .
