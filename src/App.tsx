@@ -8,7 +8,6 @@ import { EditNote } from './components/EditNoteComponent'
 import { Nav } from './components/NavComponent'
 import { NotesBoard } from './components/NotesBoard'
 
-
 import styles from './App.module.css'
 import navStyles from './components/NavComponent.module.css'
 
@@ -21,7 +20,6 @@ export const App: Component = () => {
 
   const [showNoteModal, setShowNoteModal] = createSignal(false)
   const [currentNote, setCurrentNote] = createSignal<Note | undefined>(undefined)
-
 
   const navigate = useNavigate()
 

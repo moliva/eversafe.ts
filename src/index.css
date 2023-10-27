@@ -44,7 +44,21 @@ button {
   border-radius: 5px;
   padding: 7px 10px;
 
-  background-color: gray;
+  background-color: transparent;
+  cursor: pointer;
+
+  color: white;
+  font-family: var(--font-family);
+  font-size: 16px;
+}
+
+.button {
+  border: 0;
+  border-radius: 5px;
+  padding: 7px 10px;
+
+  background-color: transparent;
+  cursor: pointer;
 
   color: white;
   font-family: var(--font-family);

@@ -28,7 +28,7 @@ export const Nav = (props: NavProps) => {
         <>
           <div class={styles['nav-app-controls']}>
             <Filter value={filter} onChange={onFilterChange} />
-            <a class={`${appStyles.button} ${appStyles.link} ${styles['new-note']}`} onClick={onNewNoteClicked} ><Fa class={styles['nav-icon']} icon={faPlusSquare} /></a>
+            <button class={`${appStyles.button} ${appStyles.link} ${styles['new-note']}`} onClick={onNewNoteClicked}><Fa class={styles['nav-icon']} icon={faPlusSquare} /></button>
           </div>
           <div class={styles['nav-auth-controls']}>
             <a class={`${appStyles.button} ${appStyles.link} ${styles['logout']}`} href={import.meta.env.BASE_URL} ><Fa class={styles['nav-icon']} icon={faUnlockKeyhole} /></a>
