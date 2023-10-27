@@ -103,6 +103,12 @@ export const App: Component = () => {
       })
   }
 
+  const onTagClicked = (tag: string): void => {
+    const currentFilter = filter()
+
+    setFilter(currentFilter === tag ? "" : tag)
+  }
+
   createEffect(() => {
     const lowered = filter().toLowerCase()
 
@@ -127,7 +133,7 @@ export const App: Component = () => {
               </div>
             </Match>
             <Match when={typeof notes() === 'object'}>
-              <NotesBoard notes={filteredNotes} onDelete={onDeleteNote} onEdit={showModal} onModified={onModifiedNote} onTagClicked={setFilter} />
+              <NotesBoard notes={filteredNotes} onDelete={onDeleteNote} onEdit={showModal} onModified={onModifiedNote} onTagClicked={onTagClicked} />
             </Match>
           </Switch>
         </section>
