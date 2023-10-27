@@ -5,7 +5,6 @@ import { IdentityState, Note } from './types'
 
 import { NoteComponent } from './components/NoteComponent'
 import { EditNote } from './components/EditNoteComponent'
-import { Filter } from './components/FilterComponent'
 import { Nav } from './components/NavComponent'
 
 import { API_HOST, deleteNote, fetchNotes, postNote, putNote } from './services'
@@ -156,7 +155,7 @@ export const App: Component = () => {
   })
 
   function isColumn(column: number) {
-    return function(v: Note, i: number, array: any) {
+    return function(v: Note) {
       if (!columns() || columns()!.size <= column) {
         return true
       }
@@ -177,7 +176,7 @@ export const App: Component = () => {
           <div class={styles.notes}>
             <Switch fallback={<p>Loading...</p>}>
               <Match when={typeof identity() === 'undefined'}>
-                <a href={`${API_HOST}/login`} class={`${styles.button} ${navStyles.tiny} ${styles.link}`}><h1>Login</h1></a>
+                <a href={`${API_HOST}/login`} class={`${styles.button} ${navStyles.tiny} ${styles.link} ${navStyles.login}`}><h1>Login</h1></a>
               </Match>
               <Match when={typeof notes() === 'object'}>
                 <div ref={setNotesRef} class={styles['note-content']}>

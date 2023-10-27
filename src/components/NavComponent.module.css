@@ -38,6 +38,10 @@
   color: lightgreen;
 }
 
+.login:hover {
+  color: DarkKhaki;
+}
+
 .logout:hover {
   color: tan;
 }

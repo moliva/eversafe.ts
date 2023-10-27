@@ -31,7 +31,7 @@ export const Nav = (props: NavProps) => {
             <a class={`${appStyles.button} ${appStyles.link} ${styles['new-note']}`} onClick={onNewNoteClicked} ><Fa class={styles['nav-icon']} icon={faPlusSquare} /></a>
           </div>
           <div class={styles['nav-auth-controls']}>
-            <a class={`${appStyles.button} ${appStyles.link} ${styles['logout']}`} href={`/`} ><Fa class={styles['nav-icon']} icon={faUnlockKeyhole} /></a>
+            <a class={`${appStyles.button} ${appStyles.link} ${styles['logout']}`} href={import.meta.env.BASE_URL} ><Fa class={styles['nav-icon']} icon={faUnlockKeyhole} /></a>
             <img
               class={`${styles['profile-picture']} ${styles.tiny}`}
               src={identity.identity.picture}
@@ -42,7 +42,7 @@ export const Nav = (props: NavProps) => {
             />
           </div>
         </>
-      ) : (<a href={`${API_HOST}/login`} class={`${appStyles.button} ${styles.tiny} ${appStyles.link}`}><Fa class={styles['nav-icon']} icon={faKey} /></a>)}
+      ) : (<a href={`${API_HOST}/login`} class={`${appStyles.button} ${styles.tiny} ${appStyles.link} ${styles['login']}`}><Fa class={styles['nav-icon']} icon={faKey} /></a>)}
     </div>
   </nav>
 
