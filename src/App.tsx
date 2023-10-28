@@ -2,15 +2,15 @@ import { createSignal, type Component, onMount, Switch, Match, Show, createEffec
 import { useNavigate, useSearchParams } from "@solidjs/router"
 
 import { IdentityState, Note } from './types'
-import { API_HOST, deleteNote, fetchNotes, fetchTags, postNote, putNote } from './services'
+import { deleteNote, fetchNotes, fetchTags, postNote, putNote } from './services'
 
 import { EditNote } from './components/EditNoteComponent'
 import { Nav } from './components/NavComponent'
 import { NotesBoard } from './components/NotesBoard'
+import { Tags } from './components/Tags'
+import { Login } from './components/Login'
 
 import styles from './App.module.css'
-import navStyles from './components/NavComponent.module.css'
-import { Tags } from './components/Tags'
 
 export const App: Component = () => {
   const [identity, setIdentity] = createSignal<IdentityState>(undefined)
@@ -124,41 +124,37 @@ export const App: Component = () => {
 
   createEffect(() => {
     const lowered = filter().toLowerCase()
-
     const filtered = (notes() ?? []).filter(note => note.name.toLowerCase().includes(lowered) || note.tags.some(tag => tag.includes(lowered)))
+
     setFilteredNotes(filtered)
   })
 
   return (
     <div class={styles.App}>
-      <header class={styles.header}>
-        <Nav identity={identity()} filter={filter} onFilterChange={setFilter} onNewNoteClicked={() => showModal(undefined)} />
-        <Switch fallback={<p>Loading...</p>}>
-          <Match when={typeof identity() === 'undefined'}>
-          </Match>
-          <Match when={typeof tags() === 'object'}>
-            <Tags tags={tags} onTagClicked={onTagClicked} />
-          </Match>
-        </Switch>
-      </header>
-      <main class={styles.main}>
-        <Show when={showNoteModal()}>
-          <EditNote note={currentNote()} onDiscard={() => setShowNoteModal(false)} onConfirm={createNote} />
-        </Show>
-        <section class={styles.content}>
-          <Switch fallback={<p>Loading...</p>}>
-            <Match when={typeof identity() === 'undefined'}>
-              <div style={{ "min-height": "100vh", "align-items": "center", display: "flex" }}>
-                <a href={`${API_HOST}/login`} class={`${styles.button} ${navStyles.tiny} ${styles.link} ${navStyles.login}`} style={{ "font-size": "30px", "font-weight": "bold" }}>Login</a>
-              </div>
-            </Match>
-            <Match when={typeof notes() === 'object'}>
-              <NotesBoard notes={filteredNotes} onDelete={onDeleteNote} onEdit={showModal} onModified={onModifiedNote} onTagClicked={onTagClicked} />
-            </Match>
-          </Switch>
-        </section>
-      </main>
+      <Switch fallback={<Login />}>
+        <Match when={typeof identity() !== 'undefined'}>
+          <header class={styles.header}>
+            <Nav identity={identity()} filter={filter} onFilterChange={setFilter} onNewNoteClicked={() => showModal(undefined)} />
+            <Switch fallback={<p>Loading...</p>}>
+              <Match when={typeof tags() === 'object'}>
+                <Tags tags={tags} onTagClicked={onTagClicked} />
+              </Match>
+            </Switch>
+          </header>
+          <main class={styles.main}>
+            <Show when={showNoteModal()}>
+              <EditNote note={currentNote()} onDiscard={() => setShowNoteModal(false)} onConfirm={createNote} />
+            </Show>
+            <section class={styles.content}>
+              <Switch fallback={<p>Loading...</p>}>
+                <Match when={typeof notes() === 'object'}>
+                  <NotesBoard notes={filteredNotes} onDelete={onDeleteNote} onEdit={showModal} onModified={onModifiedNote} onTagClicked={onTagClicked} />
+                </Match>
+              </Switch>
+            </section>
+          </main>
+        </Match>
+      </Switch>
     </div>
   )
 }
-
