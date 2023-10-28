@@ -41,8 +41,6 @@ export const App: Component = () => {
       }
       return false
     }
-
-
   }
 
   onMount(async () => {

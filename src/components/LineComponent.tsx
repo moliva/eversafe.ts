@@ -1,7 +1,7 @@
-import { createSignal } from "solid-js"
+import { Accessor, createSignal } from "solid-js"
 
 import Fa from "solid-fa"
-import { faClipboard, faEye } from "@fortawesome/free-solid-svg-icons"
+import { faChevronDown, faChevronRight, faClipboard, faEye } from "@fortawesome/free-solid-svg-icons"
 
 import { LineFormat } from "../types"
 
@@ -13,12 +13,15 @@ import styles from './LineComponent.module.css'
 
 export type LineProps = {
   key: LineFormat
+  hasChildren: boolean
+  collapsed: Accessor<boolean>
 
   onCheckToggle(): void
+  toggleCollapsed(): void
 }
 
 export const LineComponent = (props: LineProps) => {
-  const { key, onCheckToggle } = props
+  const { key, collapsed, hasChildren, toggleCollapsed, onCheckToggle } = props
 
   const [showMenu, setShowMenu] = createSignal(false)
   const [blur, setBlur] = createSignal(!!key.blur)
@@ -31,8 +34,15 @@ export const LineComponent = (props: LineProps) => {
     {key.checkbox ? <input type="checkbox" checked={!!key.check} onClick={onCheckToggle} /> : null}
     {keyLine}
     {showMenu() ? <div class={styles['content-controls']}>
-      {key.blur ? <button class={`${styles['content-control']} ${styles['blur-control']}`} onClick={() => { setBlur(!blur()) }}><Fa icon={faEye} /></button> : null}
+      {key.blur
+        ? <button class={`${styles['content-control']} ${styles['blur-control']}`} onClick={() => { setBlur(!blur()) }}><Fa icon={faEye} /></button>
+        : null
+      }
       <button class={`${styles['content-control']} ${noteStyles['copy-control']}`} onClick={() => { copyToClipboard(key.line!) }}><Fa icon={faClipboard} /></button>
+      {hasChildren
+        ? <button onClick={toggleCollapsed}><Fa class={`${appStyles.button} ${noteStyles.arrow}`} icon={collapsed() ? faChevronRight : faChevronDown} /></button>
+        : null
+      }
     </div> : null
     }
   </div >
