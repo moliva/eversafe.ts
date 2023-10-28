@@ -19,6 +19,9 @@ export const App: Component = () => {
   const [filter, setFilter] = createSignal("")
   const [filteredNotes, setFilteredNotes] = createSignal<Note[]>([])
 
+  const [appRef, setAppRef] = createSignal<HTMLElement | undefined>()
+
+  const [topTagLength, setTopTagLength] = createSignal(600) // approx size per note
   const [tags, setTags] = createSignal<string[] | undefined>(undefined)
 
   const [showNoteModal, setShowNoteModal] = createSignal(false)
@@ -58,14 +61,28 @@ export const App: Component = () => {
     }
   }
 
+  const updateTopTagLength = () => {
+    const ref = appRef()
+
+    if (!ref)
+      // do nothing
+      return
+
+    const width = ref.getBoundingClientRect().width
+    const newTopTagLength = Math.min(600, width) // each note = (400 content + 20 horizontal padding + 5 gap) width
+    setTopTagLength(newTopTagLength)
+  }
+
   onMount(async () => {
     refreshContent()
 
     window.addEventListener('keydown', handleAppKeydown, true)
+    window.addEventListener('resize', updateTopTagLength)
   })
 
   onCleanup(() => {
     window.removeEventListener('keydown', handleAppKeydown)
+    window.removeEventListener('resize', updateTopTagLength)
   })
 
   // handle auth
@@ -130,14 +147,14 @@ export const App: Component = () => {
   })
 
   return (
-    <div class={styles.App}>
+    <div ref={setAppRef} class={styles.App}>
       <Switch fallback={<Login />}>
         <Match when={typeof identity() !== 'undefined'}>
           <header class={styles.header}>
-            <Nav identity={identity()} filter={filter} onFilterChange={setFilter} onNewNoteClicked={() => showModal(undefined)} />
+            <Nav identity={identity()!} filter={filter} onFilterChange={setFilter} onNewNoteClicked={() => showModal(undefined)} />
             <Switch fallback={<p>Loading...</p>}>
               <Match when={typeof tags() === 'object'}>
-                <Tags tags={tags} onTagClicked={onTagClicked} />
+                <Tags tags={tags} topTagLength={topTagLength} onTagClicked={onTagClicked} />
               </Match>
             </Switch>
           </header>

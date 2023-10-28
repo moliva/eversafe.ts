@@ -29,6 +29,7 @@ export const NoteComponent = (props: NoteProps) => {
   const [collapsed, setCollapsed] = createSignal(false)
   const [showingMore, setShowingMore] = createSignal(false)
 
+  const [topTagLength] = createSignal(370) // approx size per note
   const [tags, setTags] = createSignal<string[] | undefined>()
 
   const toggleCollapsed = () => {
@@ -68,7 +69,7 @@ export const NoteComponent = (props: NoteProps) => {
         <button class={`${styles['delete-control']} ${styles['note-control']}`} onClick={() => props.onDelete(note)}><Fa icon={faXmark} /></button>
       </div>
     </div>
-    <Tags class={styles['note-tags']} tags={tags} onTagClicked={onTagClicked} />
+    <Tags class={styles['note-tags']} topTagLength={topTagLength} tags={tags} onTagClicked={onTagClicked} />
     {
       collapsed() ? null : <>
         {isLarge && !showingMore()

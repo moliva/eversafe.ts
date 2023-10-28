@@ -24,7 +24,6 @@
   height: 33px;
 
   display: flex;
-  gap: 10px;
 
   align-items: center;
   justify-content: center;
@@ -42,8 +41,17 @@
   flex-grow: 0;
   flex-shrink: 0;
 
+  position: relative;
+
   display: flex;
   align-items: center;
+}
+
+@media screen and (min-width: 1110px) {
+  .nav-auth-controls {
+    position: fixed;
+    right: 15%;
+  }
 }
 
 .new-note:hover {
