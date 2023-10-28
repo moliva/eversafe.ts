@@ -12,6 +12,8 @@ import { Login } from './components/Login'
 
 import styles from './App.module.css'
 
+const MAX_TAG_LENGTH = 700
+
 export const App: Component = () => {
   const [identity, setIdentity] = createSignal<IdentityState>(undefined)
 
@@ -21,7 +23,7 @@ export const App: Component = () => {
 
   const [appRef, setAppRef] = createSignal<HTMLElement | undefined>()
 
-  const [topTagLength, setTopTagLength] = createSignal(600) // approx size per note
+  const [topTagLength, setTopTagLength] = createSignal(MAX_TAG_LENGTH) // approx size per note
   const [tags, setTags] = createSignal<string[] | undefined>(undefined)
 
   const [showNoteModal, setShowNoteModal] = createSignal(false)
@@ -44,8 +46,10 @@ export const App: Component = () => {
   }
 
   const refreshContent = async () => {
-    refreshNotes()
-    refreshTags()
+    return Promise.all([
+      refreshNotes(),
+      refreshTags(),
+    ])
   }
 
   const handleAppKeydown = (e: KeyboardEvent) => {
@@ -69,7 +73,7 @@ export const App: Component = () => {
       return
 
     const width = ref.getBoundingClientRect().width
-    const newTopTagLength = Math.min(600, width) // each note = (400 content + 20 horizontal padding + 5 gap) width
+    const newTopTagLength = Math.min(MAX_TAG_LENGTH, width) // each note = (400 content + 20 horizontal padding + 5 gap) width
     setTopTagLength(newTopTagLength)
   }
 
@@ -152,7 +156,7 @@ export const App: Component = () => {
         <Match when={typeof identity() !== 'undefined'}>
           <header class={styles.header}>
             <Nav identity={identity()!} filter={filter} onFilterChange={setFilter} onNewNoteClicked={() => showModal(undefined)} />
-            <Switch fallback={<p>Loading...</p>}>
+            <Switch>
               <Match when={typeof tags() === 'object'}>
                 <Tags tags={tags} topTagLength={topTagLength} onTagClicked={onTagClicked} />
               </Match>
