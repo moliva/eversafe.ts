@@ -2,6 +2,12 @@ import { Identity, Note } from "./types";
 
 export const API_HOST = import.meta.env.VITE_API_URL
 
+export async function fetchTags(identity: Identity): Promise<string[]> {
+  const res = await authentifiedFetch(`${API_HOST}/tags`, identity!)
+
+  return await res.json() as string[]
+}
+
 export async function fetchNotes(identity: Identity): Promise<Note[]> {
   const res = await authentifiedFetch(`${API_HOST}/notes`, identity!)
 

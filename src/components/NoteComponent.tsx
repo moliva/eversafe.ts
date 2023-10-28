@@ -1,12 +1,15 @@
-import { For, createSignal } from 'solid-js'
+import { createSignal, onMount } from 'solid-js'
+
+import Fa from 'solid-fa'
+import { faPenToSquare, faXmark, faClipboard, faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+
 import { deepCopy } from "deep-copy-ts"
 
 import { Note } from '../types'
 import { WRAPPING_SIZE, contentToString, copyToClipboard, noteSize } from '../utils'
 
 import { ContentComponent } from './ContentComponent'
-import Fa from 'solid-fa'
-import { faPenToSquare, faXmark, faClipboard, faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { Tags } from './Tags'
 
 import styles from './NoteComponent.module.css'
 import appStyles from '../App.module.css'
@@ -21,10 +24,12 @@ export type NoteProps = {
 }
 
 export const NoteComponent = (props: NoteProps) => {
-  const { note } = props
+  const { note, onTagClicked } = props
 
   const [collapsed, setCollapsed] = createSignal(false)
   const [showingMore, setShowingMore] = createSignal(false)
+
+  const [tags, setTags] = createSignal<string[] | undefined>()
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed())
@@ -47,6 +52,10 @@ export const NoteComponent = (props: NoteProps) => {
 
   const isLarge = noteSize(note) > WRAPPING_SIZE
 
+  onMount(() => {
+    setTags(note.tags)
+  })
+
   return <div class={styles.note} style={{ '--note-color': note.color }}>
     <div class={styles['note-header']}>
       <div class={styles['note-label']}>
@@ -59,17 +68,16 @@ export const NoteComponent = (props: NoteProps) => {
         <button class={`${styles['delete-control']} ${styles['note-control']}`} onClick={() => props.onDelete(note)}><Fa icon={faXmark} /></button>
       </div>
     </div>
-    <div class={styles['note-tags']}>
-      <For each={note.tags}>{
-        (tag) => <label class={`${styles['note-tag']} ${appStyles.button}`} onClick={() => props.onTagClicked(tag)}>{tag}</label>
-      }</For>
-    </div>
-    {collapsed() ? null : <>
-      {isLarge && !showingMore()
-        ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
-        : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
-      }
-      {isLarge ? <span class={`${styles['note-expand-control']} ${appStyles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
-    </>}
+    <Tags class={styles['note-tags']} tags={tags} onTagClicked={onTagClicked} />
+    {
+      collapsed() ? null : <>
+        {isLarge && !showingMore()
+          ? <div class={styles['note-constrain']}><ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} /></div>
+          : <ContentComponent content={note.content} initial onCheckToggle={onCheckToggle} />
+        }
+        {isLarge ? <span class={`${styles['note-expand-control']} ${appStyles.button}`} onClick={() => setShowingMore(!showingMore())}>{showingMore() ? 'Show less' : 'Show more'}</span> : null}
+      </>
+    }
   </div >
 }
+
