@@ -17,3 +17,8 @@
   padding: 2px 3px;
   border-color: white;
 }
+
+.active {
+  color: var(--note-color);
+  background-color: white;
+}

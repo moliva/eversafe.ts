@@ -1,4 +1,3 @@
-
 export type LineFormat = {
   line?: string
   checkbox?: boolean
@@ -19,7 +18,10 @@ export type Note = {
 
 export type Identity = {
   identity: any
-  token: string
 }
 
-export type IdentityState = Identity | undefined
+export type IdentityState = { identity: Identity | undefined }
+
+export const INITIAL_STATE: IdentityState = {
+  identity: undefined
+}

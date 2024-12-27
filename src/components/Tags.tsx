@@ -5,6 +5,7 @@ import styles from './Tags.module.css'
 
 export type TagsProps = {
   tags: Accessor<string[] | undefined>
+  activeTag?: Accessor<string | undefined>
   topTagLength: Accessor<number>
 
   class?: string
@@ -16,7 +17,7 @@ const TAG_STATIC_SIZE = 6 + 1 + 2 // padding 6 + border 1 + gap 2
 const TAG_CHAR_SIZE = 5.70 // content (~6px per char)
 
 export function Tags(props: TagsProps) {
-  const { tags, topTagLength, onTagClicked } = props;
+  const { tags, activeTag, topTagLength, onTagClicked } = props;
 
   const [topTags, setTopTags] = createSignal<string[]>([])
 
@@ -42,7 +43,7 @@ export function Tags(props: TagsProps) {
 
   return <div class={`${props.class ?? ''} ${styles['note-tags']}`}>
     <For each={topTags()}>{
-      (tag) => <label class={`${styles['note-tag']} ${appStyles.button}`} onClick={() => onTagClicked(tag)}>{tag}</label>
+      (tag) => <label class={`${styles['note-tag']} ${appStyles.button}`} classList={{ [styles.active]: activeTag?.() === tag }} onClick={() => onTagClicked(tag)}>{tag}</label>
     }</For>
-  </div>
+  </div >
 }
