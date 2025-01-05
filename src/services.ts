@@ -1,9 +1,10 @@
-import { authentifiedFetch, setApiHost } from '@moliva/auth.ts'
+import { authentifiedFetch, setAuthConfig } from '@moliva/auth.ts'
 
 import { Identity, Note } from './types'
 
 export const API_HOST = import.meta.env.VITE_API_URL
-setApiHost(API_HOST)
+
+setAuthConfig({ api: API_HOST, web: import.meta.env.BASE_URL })
 
 export async function fetchTags(identity: Identity): Promise<string[]> {
   const res = await authentifiedFetch(`${API_HOST}/tags`)

@@ -28,7 +28,7 @@ importers:
         version: 0.2.2(@fortawesome/fontawesome-svg-core@6.7.2)(react@19.0.0)
       '@moliva/auth.ts':
         specifier: github:moliva/auth.ts
-        version: https://codeload.github.com/moliva/auth.ts/tar.gz/f322a899afafccc28e47f1306553846de3afebe4
+        version: https://codeload.github.com/moliva/auth.ts/tar.gz/59e54499b4f6ce168c4c60db9fd07edcb501f83f
       '@solidjs/router':
         specifier: ^0.8.4
         version: 0.8.4(solid-js@1.9.3)
@@ -324,8 +324,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@moliva/auth.ts@https://codeload.github.com/moliva/auth.ts/tar.gz/f322a899afafccc28e47f1306553846de3afebe4':
-    resolution: {tarball: https://codeload.github.com/moliva/auth.ts/tar.gz/f322a899afafccc28e47f1306553846de3afebe4}
+  '@moliva/auth.ts@https://codeload.github.com/moliva/auth.ts/tar.gz/59e54499b4f6ce168c4c60db9fd07edcb501f83f':
+    resolution: {tarball: https://codeload.github.com/moliva/auth.ts/tar.gz/59e54499b4f6ce168c4c60db9fd07edcb501f83f}
     version: 1.0.0
 
   '@nothing-but/utils@0.3.2':
@@ -905,7 +905,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@moliva/auth.ts@https://codeload.github.com/moliva/auth.ts/tar.gz/f322a899afafccc28e47f1306553846de3afebe4':
+  '@moliva/auth.ts@https://codeload.github.com/moliva/auth.ts/tar.gz/59e54499b4f6ce168c4c60db9fd07edcb501f83f':
     dependencies:
       solid-js: 1.9.3
 
